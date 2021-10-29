@@ -186,11 +186,11 @@ static void W25Q256_AutoPollingMemReady(QSPI_HandleTypeDef *hqspi)
 
 void W25Q256_ClearRX_Buffer(void)
 {
+
 	/* Initialize Reception buffer --------------------------------------- */
-	for (index = 0; index < BUFFERSIZE; index++)
+	for (int index = 0; index < BUFFERSIZE; index++)
 	{
 		aRxBuffer[index] = 0;
 	}
 }
 
-}
