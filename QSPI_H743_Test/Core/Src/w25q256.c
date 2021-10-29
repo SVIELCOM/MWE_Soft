@@ -137,7 +137,8 @@ uint16_t W25Q256_GetMftrDeviceID_QuadIO(QSPI_HandleTypeDef *hqspi)
 	sCommand.DummyCycles = DUMMY_MANUFACTURER_DEVICE_ID_QUAD_IO;
 	sCommand.SIOOMode = QSPI_SIOO_INST_EVERY_CMD;
 
-	if (HAL_QSPI_Command(hqspi, &sCommand, HAL_QSPI_TIMEOUT_DEFAULT_VALUE) != HAL_OK)
+	// if (HAL_QSPI_Command(hqspi, &sCommand, HAL_QSPI_TIMEOUT_DEFAULT_VALUE) != HAL_OK)	/* отправка команды на чип в блокирующем режиме */
+	if (HAL_QSPI_Command_IT(hqspi, &sCommand) != HAL_OK) /* отправка команды на чип в режиме прерываний (может требовать наличия колбэка HAL_QSPI_CmdCpltCallback ) */
 	{
 		Error_Handler();
 	}
@@ -183,3 +184,13 @@ static void W25Q256_AutoPollingMemReady(QSPI_HandleTypeDef *hqspi)
 	}
 }
 
+void W25Q256_ClearRX_Buffer(void)
+{
+	/* Initialize Reception buffer --------------------------------------- */
+	for (index = 0; index < BUFFERSIZE; index++)
+	{
+		aRxBuffer[index] = 0;
+	}
+}
+
+}
