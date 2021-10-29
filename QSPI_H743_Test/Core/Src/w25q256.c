@@ -125,7 +125,7 @@ uint16_t W25Q256_GetMftrDeviceID_QuadIO(QSPI_HandleTypeDef *hqspi)
 	sCommand.InstructionMode = QSPI_INSTRUCTION_1_LINE;
 	sCommand.Instruction = MANUFACTURER_DEVICE_ID_QUAD_IO;
 	sCommand.AddressMode = QSPI_ADDRESS_4_LINES;
-	sCommand.AddressSize = QSPI_ADDRESS_24_BITS; /* в дальнейшем надо проверять, в каком режиме адресации находится FLASH*/
+	sCommand.AddressSize = QSPI_ADDRESS_24_BITS; /*TODO: в дальнейшем надо проверять, в каком режиме адресации находится FLASH*/
 	sCommand.Address = 0x000000U; /*и передавать столько бит адреса, сколько установлено в регистре ADP */
 	sCommand.AlternateByteMode = QSPI_ALTERNATE_BYTES_4_LINES;
 	sCommand.AlternateBytesSize = QSPI_ALTERNATE_BYTES_8_BITS;
