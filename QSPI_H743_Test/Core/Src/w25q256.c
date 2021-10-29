@@ -95,6 +95,11 @@ static void W25Q256_WriteEnable(QSPI_HandleTypeDef *QSPI_Handler)
 	}
 }
 
+void W25Q256_GetByteAddrMode(void)
+{
+
+}
+
 /*
  * The Enter 4-Byte Address Mode function will
  * allow 32-bit address (A31-A0) to be used to
@@ -186,7 +191,6 @@ static void W25Q256_AutoPollingMemReady(QSPI_HandleTypeDef *hqspi)
 
 void W25Q256_ClearRX_Buffer(void)
 {
-
 	/* Initialize Reception buffer --------------------------------------- */
 	for (int index = 0; index < BUFFERSIZE; index++)
 	{

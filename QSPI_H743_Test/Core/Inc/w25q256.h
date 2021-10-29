@@ -220,6 +220,7 @@
 void W25Q256_QUADSPI_Init(QSPI_HandleTypeDef *hqspi);
 void W25Q256_Enter_4ByteAddrMode(QSPI_HandleTypeDef *hqspi);
 void W25Q256_ClearRX_Buffer(void);
+void W25Q256_GetByteAddrMode(void);
 uint16_t W25Q256_GetMftrDeviceID_QuadIO(QSPI_HandleTypeDef *hqspi);
 
 #endif /* INC_W25Q256_H_ */
