@@ -73,7 +73,7 @@ static void W25Q256_WriteEnable(QSPI_HandleTypeDef *QSPI_Handler)
 	sCommand.DdrHoldHalfCycle = QSPI_DDR_HHC_ANALOG_DELAY;
 	sCommand.SIOOMode = QSPI_SIOO_INST_EVERY_CMD;
 
-	if (HAL_QSPI_Command(QSPI_Handler, &sCommand, HAL_QSPI_TIMEOUT_DEFAULT_VALUE) != HAL_OK)
+	if (HAL_QSPI_Command_IT(QSPI_Handler, &sCommand) != HAL_OK)
 	{
 		Error_Handler();
 	}
