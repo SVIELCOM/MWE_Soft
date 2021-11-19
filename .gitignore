@@ -5,3 +5,4 @@
 **/ADC_DMA_Transfer
 **/ADC_Test
 **/LwIP_HTTP_Server_Netconn_RTOS
+**/ADC_OverSampler

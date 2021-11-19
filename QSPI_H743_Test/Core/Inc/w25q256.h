@@ -28,7 +28,7 @@
  */
 
 /*QSPI prescaler define*/
-#define QSPI_CLK_PRESCALER				24 /* 10 MHz. AHB3 - 240 MHz*/
+#define QSPI_CLK_PRESCALER				4 /* 10 MHz. AHB3 - 240 MHz*/
 
 /* W25Q256VJ size */
 #define QSPI_FLASHSIZE					24 /*calculated for 32MB size */
