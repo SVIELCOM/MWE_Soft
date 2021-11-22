@@ -105,7 +105,14 @@ int main(void)
 	AdcHandle.Init.ExternalTrigConvEdge = ADC_EXTERNALTRIGCONVEDGE_NONE; /* Parameter discarded because software trigger chosen */
 	AdcHandle.Init.ConversionDataManagement = ADC_CONVERSIONDATA_DMA_CIRCULAR; /* ADC DMA circular requested */
 	AdcHandle.Init.Overrun = ADC_OVR_DATA_OVERWRITTEN; /* DR register is overwritten with the last conversion result in case of overrun */
-	AdcHandle.Init.OversamplingMode = DISABLE; /* No oversampling */
+
+	/* Test with OVERSAMPLING ENABLED*/
+	AdcHandle.Init.OversamplingMode = ENABLE; /* No oversampling */
+	AdcHandle.Init.Oversampling.Ratio = 16;
+	AdcHandle.Init.Oversampling.RightBitShift = ADC_RIGHTBITSHIFT_4;
+	AdcHandle.Init.Oversampling.TriggeredMode = ADC_TRIGGEREDMODE_SINGLE_TRIGGER;
+	AdcHandle.Init.Oversampling.OversamplingStopReset = ADC_REGOVERSAMPLING_CONTINUED_MODE;
+
 	/* Initialize ADC peripheral according to the passed parameters */
 	if (HAL_ADC_Init(&AdcHandle) != HAL_OK)
 	{
