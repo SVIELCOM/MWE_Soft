@@ -18,7 +18,10 @@
  */
 
 /* Includes ------------------------------------------------------------------*/
+#define ARM_MATH_CM7
+
 #include "main.h"
+#include "arm_math.h"
 
 /** @addtogroup STM32H7xx_HAL_Examples
  * @{
@@ -93,7 +96,7 @@ int main(void)
 	}
 
 	AdcHandle.Init.ClockPrescaler = ADC_CLOCK_ASYNC_DIV2; /* Asynchronous clock mode, input ADC clock divided by 2*/
-	AdcHandle.Init.Resolution = ADC_RESOLUTION_16B; /* 16-bit resolution for converted data */
+	AdcHandle.Init.Resolution = ADC_RESOLUTION_14B; /* 16-bit resolution for converted data */
 	AdcHandle.Init.ScanConvMode = DISABLE; /* Sequencer disabled (ADC conversion on only 1 channel: channel set on rank 1) */
 	AdcHandle.Init.EOCSelection = ADC_EOC_SINGLE_CONV; /* EOC flag picked-up to indicate conversion end */
 	AdcHandle.Init.LowPowerAutoWait = DISABLE; /* Auto-delayed conversion feature disabled */
@@ -107,9 +110,9 @@ int main(void)
 	AdcHandle.Init.Overrun = ADC_OVR_DATA_OVERWRITTEN; /* DR register is overwritten with the last conversion result in case of overrun */
 
 	/* Test with OVERSAMPLING ENABLED*/
-	AdcHandle.Init.OversamplingMode = ENABLE; /* No oversampling */
+	AdcHandle.Init.OversamplingMode = DISABLE; /* No oversampling */
 	AdcHandle.Init.Oversampling.Ratio = 16;
-	AdcHandle.Init.Oversampling.RightBitShift = ADC_RIGHTBITSHIFT_4;
+	AdcHandle.Init.Oversampling.RightBitShift = ADC_RIGHTBITSHIFT_6;
 	AdcHandle.Init.Oversampling.TriggeredMode = ADC_TRIGGEREDMODE_SINGLE_TRIGGER;
 	AdcHandle.Init.Oversampling.OversamplingStopReset = ADC_REGOVERSAMPLING_CONTINUED_MODE;
 
@@ -147,6 +150,7 @@ int main(void)
 	/* Infinite Loop */
 	while (1)
 	{
+		arm_biquad_cas
 	}
 }
 
