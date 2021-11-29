@@ -42,7 +42,7 @@
 
 /* Definition for ADCx Channel Pin */
 #define ADCx_CHANNEL_PIN_CLK_ENABLE()   __HAL_RCC_GPIOF_CLK_ENABLE()
-#define ADCx_CHANNEL_PIN                GPIO_PIN_12
+#define ADCx_CHANNEL_PIN                GPIO_PIN_12 // для платы весов GPIO_PIN_12
 #define ADCx_CHANNEL_GPIO_PORT          GPIOF
 
 /* Definition for ADCx's Channel */
