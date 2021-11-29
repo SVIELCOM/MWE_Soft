@@ -160,7 +160,9 @@ int main(void)
 	float64_t IIRfilter_taps[4 * IIR_FILTER_NUM_STAGES];
 
 	/*данные для FIR фильтра*/
-#define FIR_FILTER_NUM_STAGES	21  /* количество секций */
+#define FIR_FILTER_NUM_STAGES	21  /* количество секций фильтра*/
+
+	/*коэффициенты фильтра*/
 	float32_t FIRfilterCoefficients[FIR_FILTER_NUM_STAGES] = { 0.0072524808347225189208984375, 0.009322776459157466888427734375, 0.01530767977237701416015625, 0.02464949898421764373779296875,
 			0.0364511311054229736328125, 0.04956446588039398193359375, 0.062704540789127349853515625, 0.07457792758941650390625, 0.084012426435947418212890625, 0.0900747776031494140625,
 			0.09216459095478057861328125, 0.0900747776031494140625, 0.084012426435947418212890625, 0.07457792758941650390625, 0.062704540789127349853515625, 0.04956446588039398193359375,
@@ -177,6 +179,7 @@ int main(void)
 	float32_t VoltsAverage, IIRVoltsAverage, FIRVoltsAverage;
 	VoltsAverage = 0.0f; /* переменные для усреднения */
 
+	/*вызов инициализации фильтров*/
 	arm_fir_init_f32(&FIRfilterInstance, FIR_FILTER_NUM_STAGES, FIRfilterCoefficients, FIRfilter_taps, ADC_CONVERTED_DATA_BUFFER_SIZE);
 	arm_biquad_cascade_df1_init_f32(&IIRfilterInstance, IIR_FILTER_NUM_STAGES, IIRfilterCoefficients, IIRfilter_taps);
 
@@ -187,7 +190,7 @@ int main(void)
 		{
 			aADCvoltsData[indx] = (float32_t) aADCxConvertedData[indx] * VoltADCCoeffitient;
 		}
-		/* сичтаем тупое среднее*/
+		/* считаем тупое среднее*/
 		float32_t summa = 0;
 		for (uint8_t indx = 0; indx < ADC_CONVERTED_DATA_BUFFER_SIZE; indx++)
 		{
@@ -196,7 +199,7 @@ int main(void)
 		VoltsAverage = (VoltsAverage + (float) summa) / (ADC_CONVERTED_DATA_BUFFER_SIZE + 1);
 		/************************/
 
-		/* закидывавем массив в фильтр*/
+		/* закидывавем массив в фильтры*/
 		arm_biquad_cascade_df1_f32(&IIRfilterInstance, aADCvoltsData, aIIRfilterConvertedData, ADC_CONVERTED_DATA_BUFFER_SIZE);
 		arm_fir_f32(&FIRfilterInstance, aADCvoltsData, aFIRfilterConvertedData, ADC_CONVERTED_DATA_BUFFER_SIZE);
 
