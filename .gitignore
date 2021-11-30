@@ -4,5 +4,6 @@
 **/Debug
 #**/ADC_DMA_Transfer
 #**/ADC_Test
-**/LwIP_HTTP_Server_Netconn_RTOS
+#**/LwIP_HTTP_Server_Netconn_RTOS
 #**/ADC_OverSampler
+**/ADC_DualModeInterleaved
