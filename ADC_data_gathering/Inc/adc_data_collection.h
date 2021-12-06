@@ -9,6 +9,10 @@
 #define ADC_DATA_COLLECTION_H_
 
 #include "arm_math.h"
+#include "ADCandTIMconfig.h"
+#include "stm32h7xx_hal.h"
+#include "stm32h7xx_hal_conf.h"
+
 #define __FPU_PRESENT 	1
 
 #define ADC_TRIGGER_FROM_TIMER

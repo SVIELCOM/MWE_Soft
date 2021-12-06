@@ -7,6 +7,7 @@
 #include "stm32h7xx_hal_conf.h"
 
 #include "adc_data_collection.h"
+// #include "ADCandTIMconfig.h" /*TODO: возможно надо убрать*/
 
 // #include "stm32h7xx_nucleo.h"
 
