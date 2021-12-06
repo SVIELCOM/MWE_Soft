@@ -21,6 +21,12 @@ if (HAL_ADC_DeInit(&ADC_Handle) != HAL_OK)
 	Error_Handler();
 }
 
+/* ### - 4 - Start conversion in DMA mode ################################# */
+if (HAL_ADC_Start_DMA(&ADC_Handle, (uint32_t*) aADC1ConvertedData, ADC_CONVERTED_DATA_BUFFER_SIZE) != HAL_OK)
+{	
+	Error_Handler();
+}
+
 void TIMforADC_Config(void)
 {
 //TODO	

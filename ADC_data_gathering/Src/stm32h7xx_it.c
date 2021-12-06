@@ -139,34 +139,9 @@ void SysTick_Handler(void)
 	HAL_IncTick();
 }
 
-/******************************************************************************/
-/*                 STM32H7xx Peripherals Interrupt Handlers                   */
-/*  Add here the Interrupt Handler for the used peripheral(s) (PPP), for the  */
-/*  available peripheral interrupt handler's name please refer to the startup */
-/*  file (startup_stm32h7xx.s).                                               */
-/******************************************************************************/
-
-/**
- * @brief  This function handles DMA1_Stream1_IRQHandler interrupt request.
- * @param  None
- * @retval None
- */
-
-/**
- * @brief  This function handles PPP interrupt request.
- * @param  None
- * @retval None
- */
-/*void PPP_IRQHandler(void)
- {
- }*/
-
-/**
- * @}
- */
-
-/**
- * @}
- */
+void DMA1_Stream1_IRQHandler(void)
+{
+	HAL_DMA_IRQHandler(ADC_Handle.DMA_Handle);
+}
 
 /************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/
