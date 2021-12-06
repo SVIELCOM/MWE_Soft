@@ -22,35 +22,17 @@
 #define __FPU_PRESENT 	1
 
 #include "main.h"
-#include "arm_math.h"
+#include <stdint.h>
+//#include "arm_math.h"
 
-/** @addtogroup STM32H7xx_HAL_Examples
- * @{
- */
-
-/** @addtogroup ADC_DMA_Transfer
- * @{
- */
-
-/* Private typedef -----------------------------------------------------------*/
-/* Private define ------------------------------------------------------------*/
-
-/* Definitions of data related to this example */
-/* Definition of ADCx conversions data table size */
-#define ADC_CONVERTED_DATA_BUFFER_SIZE   ((uint32_t)  32)   /* Size of array aADCxConvertedData[] */
-
-/* Private macro -------------------------------------------------------------*/
-/* Private variables ---------------------------------------------------------*/
-/* ADC handle declaration */
-ADC_HandleTypeDef AdcHandle;
-
-/* ADC channel configuration structure declaration */
-ADC_ChannelConfTypeDef sConfig;
+ADC_HandleTypeDef ADC_Handle; /* ADC handle declaration */
+ADC_ChannelConfTypeDef sADC_Config; /* ADC channel configuration structure declaration */
+TIM_HandleTypeDef TimForADC_Handle; /*ADC timer handle*/
 
 /* Variable containing ADC conversions data */
-ALIGN_32BYTES(static uint16_t aADCxConvertedData[ADC_CONVERTED_DATA_BUFFER_SIZE]);
+ALIGN_32BYTES(static uint16_t aADC1ConvertedData[ADC_CONVERTED_DATA_BUFFER_SIZE]);
 
-float32_t aIIRfilterConvertedData[ADC_CONVERTED_DATA_BUFFER_SIZE];
+// float32_t aIIRfilterConvertedData[ADC_CONVERTED_DATA_BUFFER_SIZE]; /*TODO: IIR фильтр выкинуть или завести его выбор через макросы*/
 float32_t aFIRfilterConvertedData[ADC_CONVERTED_DATA_BUFFER_SIZE];
 float32_t aADCvoltsData[ADC_CONVERTED_DATA_BUFFER_SIZE]; /*массив с переведенными в вольты данными*/
 
@@ -58,6 +40,7 @@ float32_t aADCvoltsData[ADC_CONVERTED_DATA_BUFFER_SIZE]; /*массив с пе�
 static void SystemClock_Config(void);
 static void Error_Handler(void);
 static void CPU_CACHE_Enable(void);
+static void TIM_Config(void);
 
 /* Private functions ---------------------------------------------------------*/
 
@@ -73,8 +56,7 @@ int main(void)
 	 To proceed, 4 steps are required: */
 
 	/* Enable the CPU Cache */
-	CPU_CACHE_Enable();
-
+//	CPU_CACHE_Enable();
 	/* STM32H7xx HAL library initialization:
 	 - Systick timer is configured by default as source of time base, but user
 	 can eventually implement his proper time base source (a general purpose
@@ -85,110 +67,112 @@ int main(void)
 	 - Low Level Initialization
 	 */
 	HAL_Init();
-
+	
 	/* Configure the system clock to 400 MHz */
 	SystemClock_Config();
-
+	
 	/* Initialize LED3 */
-	BSP_LED_Init(LED3);
-
-	/* ### - 1 - Initialize ADC peripheral #################################### */
-	AdcHandle.Instance = ADCx;
-	if (HAL_ADC_DeInit(&AdcHandle) != HAL_OK)
+	//BSP_LED_Init(LED3);
+	TIM_Config();
+	
+	/* ### - 1 - Initialize ADC1 peripheral #################################### */
+	ADC_Handle.Instance = ADC_1;
+	if (HAL_ADC_DeInit(&ADC_Handle) != HAL_OK)
 	{
 		/* ADC de-initialization Error */
 		Error_Handler();
 	}
-
-	AdcHandle.Init.ClockPrescaler = ADC_CLOCK_ASYNC_DIV2; /* Asynchronous clock mode, input ADC clock divided by 2*/
-	AdcHandle.Init.Resolution = ADC_RESOLUTION_16B; /* 16-bit resolution for converted data */
-	AdcHandle.Init.ScanConvMode = DISABLE; /* Sequencer disabled (ADC conversion on only 1 channel: channel set on rank 1) */
-	AdcHandle.Init.EOCSelection = ADC_EOC_SINGLE_CONV; /* EOC flag picked-up to indicate conversion end */
-	AdcHandle.Init.LowPowerAutoWait = DISABLE; /* Auto-delayed conversion feature disabled */
-	AdcHandle.Init.ContinuousConvMode = ENABLE; /* Continuous mode enabled (automatic conversion restart after each conversion) */
-	AdcHandle.Init.NbrOfConversion = 1; /* Parameter discarded because sequencer is disabled */
-	AdcHandle.Init.DiscontinuousConvMode = DISABLE; /* Parameter discarded because sequencer is disabled */
-	AdcHandle.Init.NbrOfDiscConversion = 1; /* Parameter discarded because sequencer is disabled */
-	AdcHandle.Init.ExternalTrigConv = ADC_SOFTWARE_START; /* Software start to trig the 1st conversion manually, without external event */
-	AdcHandle.Init.ExternalTrigConvEdge = ADC_EXTERNALTRIGCONVEDGE_NONE; /* Parameter discarded because software trigger chosen */
-	AdcHandle.Init.ConversionDataManagement = ADC_CONVERSIONDATA_DMA_CIRCULAR; /* ADC DMA circular requested */
-	AdcHandle.Init.Overrun = ADC_OVR_DATA_OVERWRITTEN; /* DR register is overwritten with the last conversion result in case of overrun */
-
+	
+	ADC_Handle.Init.ClockPrescaler = ADC_CLOCK_ASYNC_DIV2; /* Asynchronous clock mode, input ADC clock divided by 2*/
+	ADC_Handle.Init.Resolution = ADC_RESOLUTION_16B; /* 16-bit resolution for converted data */
+	ADC_Handle.Init.ScanConvMode = DISABLE; /* Sequencer disabled (ADC conversion on only 1 channel: channel set on rank 1) */
+	ADC_Handle.Init.EOCSelection = ADC_EOC_SINGLE_CONV; /* EOC flag picked-up to indicate conversion end */
+	ADC_Handle.Init.LowPowerAutoWait = DISABLE; /* Auto-delayed conversion feature disabled */
+	ADC_Handle.Init.ContinuousConvMode = ENABLE; /* Continuous mode enabled (automatic conversion restart after each conversion) */
+	ADC_Handle.Init.NbrOfConversion = 1; /* Parameter discarded because sequencer is disabled */
+	ADC_Handle.Init.DiscontinuousConvMode = DISABLE; /* Parameter discarded because sequencer is disabled */
+	ADC_Handle.Init.NbrOfDiscConversion = 1; /* Parameter discarded because sequencer is disabled */
+	ADC_Handle.Init.ExternalTrigConv = ADC_SOFTWARE_START; /* Software start to trig the 1st conversion manually, without external event */
+	ADC_Handle.Init.ExternalTrigConvEdge = ADC_EXTERNALTRIGCONVEDGE_NONE; /* Parameter discarded because software trigger chosen */
+	ADC_Handle.Init.ConversionDataManagement = ADC_CONVERSIONDATA_DMA_CIRCULAR; /* ADC DMA circular requested */
+	ADC_Handle.Init.Overrun = ADC_OVR_DATA_OVERWRITTEN; /* DR register is overwritten with the last conversion result in case of overrun */
+	
 	/* Test with OVERSAMPLING ENABLED*/
-	AdcHandle.Init.OversamplingMode = DISABLE; /* No oversampling */
-	AdcHandle.Init.Oversampling.Ratio = 16;
-	AdcHandle.Init.Oversampling.RightBitShift = ADC_RIGHTBITSHIFT_6;
-	AdcHandle.Init.Oversampling.TriggeredMode = ADC_TRIGGEREDMODE_SINGLE_TRIGGER;
-	AdcHandle.Init.Oversampling.OversamplingStopReset = ADC_REGOVERSAMPLING_CONTINUED_MODE;
-
+	ADC_Handle.Init.OversamplingMode = DISABLE; /* No oversampling */
+	ADC_Handle.Init.Oversampling.Ratio = 16;
+	ADC_Handle.Init.Oversampling.RightBitShift = ADC_RIGHTBITSHIFT_6;
+	ADC_Handle.Init.Oversampling.TriggeredMode = ADC_TRIGGEREDMODE_SINGLE_TRIGGER;
+	ADC_Handle.Init.Oversampling.OversamplingStopReset = ADC_REGOVERSAMPLING_CONTINUED_MODE;
+	
 	/* Initialize ADC peripheral according to the passed parameters */
-	if (HAL_ADC_Init(&AdcHandle) != HAL_OK)
+	if (HAL_ADC_Init(&ADC_Handle) != HAL_OK)
 	{
 		Error_Handler();
 	}
-
+	
 	/* ### - 2 - Start calibration ############################################ */
-	if (HAL_ADCEx_Calibration_Start(&AdcHandle, ADC_CALIB_OFFSET, ADC_SINGLE_ENDED) != HAL_OK)
+	if (HAL_ADCEx_Calibration_Start(&ADC_Handle, ADC_CALIB_OFFSET, ADC_SINGLE_ENDED) != HAL_OK)
 	{
 		Error_Handler();
 	}
-
+	
 	/* ### - 3 - Channel configuration ######################################## */
-	sConfig.Channel = ADCx_CHANNEL; /* Sampled channel number */
-	sConfig.Rank = ADC_REGULAR_RANK_1; /* Rank of sampled channel number ADCx_CHANNEL */
-	sConfig.SamplingTime = ADC_SAMPLETIME_8CYCLES_5; /* Sampling time (number of clock cycles unit) */
-	sConfig.SingleDiff = ADC_SINGLE_ENDED; /* Single-ended input channel */
-	sConfig.OffsetNumber = ADC_OFFSET_NONE; /* No offset subtraction */
-	sConfig.Offset = 0; /* Parameter discarded because offset correction is disabled */
-	if (HAL_ADC_ConfigChannel(&AdcHandle, &sConfig) != HAL_OK)
+	sADC_Config.Channel = ADCx_CHANNEL; /* Sampled channel number */
+	sADC_Config.Rank = ADC_REGULAR_RANK_1; /* Rank of sampled channel number ADCx_CHANNEL */
+	sADC_Config.SamplingTime = ADC_SAMPLETIME_8CYCLES_5; /* Sampling time (number of clock cycles unit) */
+	sADC_Config.SingleDiff = ADC_SINGLE_ENDED; /* Single-ended input channel */
+	sADC_Config.OffsetNumber = ADC_OFFSET_NONE; /* No offset subtraction */
+	sADC_Config.Offset = 0; /* Parameter discarded because offset correction is disabled */
+	if (HAL_ADC_ConfigChannel(&ADC_Handle, &sADC_Config) != HAL_OK)
 	{
 		Error_Handler();
 	}
-
+	
 	/* ### - 4 - Start conversion in DMA mode ################################# */
-	if (HAL_ADC_Start_DMA(&AdcHandle, (uint32_t*) aADCxConvertedData, ADC_CONVERTED_DATA_BUFFER_SIZE) != HAL_OK)
+	if (HAL_ADC_Start_DMA(&ADC_Handle, (uint32_t*) aADC1ConvertedData, ADC_CONVERTED_DATA_BUFFER_SIZE) != HAL_OK)
 	{
 		Error_Handler();
 	}
-
+	
 	/******************Замутил тут шляпу для проверки фильтрации тупым усреднением и фильтром IIR *************/
 	/*настройка фильтра хорошо описана тут https://schaumont.dyn.wpi.edu/ece4703b21/lecture7.html#:~:text=considerable%20performance%20improvement.-,IIR%20Designs%20using%20ARM%20CMSIS%20DSP,-Just%20as%20with*/
 
 	/*данные для IIR фильтра*/
-#define IIR_FILTER_NUM_STAGES	2  /* количество секций 2го порядка в фильтре*/
-	float64_t IIRfilterCoefficients[IIR_FILTER_NUM_STAGES * 5] = { 1.00383902, -1.87017398, 0.87516701, 1.87065422, -0.87852579, 1.00383902, -1.87017398, 0.87516701, 1.87065422, -0.87852579 };
-	float64_t IIRfilter_taps[4 * IIR_FILTER_NUM_STAGES];
-
+	/*
+	 #define IIR_FILTER_NUM_STAGES	2  // количество секций 2го порядка в фильтре
+	 float64_t IIRfilterCoefficients[IIR_FILTER_NUM_STAGES * 5] = { 1.00383902, -1.87017398, 0.87516701, 1.87065422, -0.87852579, 1.00383902, -1.87017398, 0.87516701, 1.87065422, -0.87852579 };
+	 float64_t IIRfilter_taps[4 * IIR_FILTER_NUM_STAGES];
+	 */
 	/*данные для FIR фильтра*/
 #define FIR_FILTER_NUM_STAGES	21  /* количество секций фильтра*/
-
+	
 	/*коэффициенты фильтра*/
 	float32_t FIRfilterCoefficients[FIR_FILTER_NUM_STAGES] = { 0.0072524808347225189208984375, 0.009322776459157466888427734375, 0.01530767977237701416015625, 0.02464949898421764373779296875,
 			0.0364511311054229736328125, 0.04956446588039398193359375, 0.062704540789127349853515625, 0.07457792758941650390625, 0.084012426435947418212890625, 0.0900747776031494140625,
 			0.09216459095478057861328125, 0.0900747776031494140625, 0.084012426435947418212890625, 0.07457792758941650390625, 0.062704540789127349853515625, 0.04956446588039398193359375,
 			0.0364511311054229736328125, 0.02464949898421764373779296875, 0.01530767977237701416015625, 0.009322776459157466888427734375, 0.0072524808347225189208984375 };
-
+	
 	float32_t FIRfilter_taps[FIR_FILTER_NUM_STAGES + ADC_CONVERTED_DATA_BUFFER_SIZE - 1];
-
+	
 	arm_biquad_casd_df1_inst_f32 IIRfilterInstance; /*структура для работы функции*/
 	arm_fir_instance_f32 FIRfilterInstance; /*структура для работы функции*/
-
+	
 	static float32_t VoltADCCoeffitient; /*TODO: потом переделать на вычисление из заданного количества бит дискретизации*/
 	VoltADCCoeffitient = 3.3f / 65536;
-
-	float32_t VoltsAverage, IIRVoltsAverage, FIRVoltsAverage;
+	
+	float32_t VoltsAverage, FIRVoltsAverage; /* IIRVoltsAverage - removed */
 	VoltsAverage = 0.0f; /* переменные для усреднения */
-
+	
 	/*вызов инициализации фильтров*/
 	arm_fir_init_f32(&FIRfilterInstance, FIR_FILTER_NUM_STAGES, FIRfilterCoefficients, FIRfilter_taps, ADC_CONVERTED_DATA_BUFFER_SIZE);
-	arm_biquad_cascade_df1_init_f32(&IIRfilterInstance, IIR_FILTER_NUM_STAGES, IIRfilterCoefficients, IIRfilter_taps);
-
+//	arm_biquad_cascade_df1_init_f32(&IIRfilterInstance, IIR_FILTER_NUM_STAGES, IIRfilterCoefficients, IIRfilter_taps);
+	
 	/* Infinite Loop */
 	while (1)
 	{
 		for (uint8_t indx = 0; indx < ADC_CONVERTED_DATA_BUFFER_SIZE; indx++) /*сформируем массив, в котором будут данные в вольтах*/
 		{
-			aADCvoltsData[indx] = (float32_t) aADCxConvertedData[indx] * VoltADCCoeffitient;
+			aADCvoltsData[indx] = (float32_t) aADC1ConvertedData[indx] * VoltADCCoeffitient;
 		}
 		/* считаем тупое среднее*/
 		float32_t summa = 0;
@@ -200,23 +184,23 @@ int main(void)
 		/************************/
 
 		/* закидывавем массив в фильтры*/
-		arm_biquad_cascade_df1_f32(&IIRfilterInstance, aADCvoltsData, aIIRfilterConvertedData, ADC_CONVERTED_DATA_BUFFER_SIZE);
+		// arm_biquad_cascade_df1_f32(&IIRfilterInstance, aADCvoltsData, aIIRfilterConvertedData, ADC_CONVERTED_DATA_BUFFER_SIZE);
 		arm_fir_f32(&FIRfilterInstance, aADCvoltsData, aFIRfilterConvertedData, ADC_CONVERTED_DATA_BUFFER_SIZE);
-
+		
 		float32_t summaVolts = 0; /*если потом использовать, то убрать эту и использовать одну переменную для суммы*/
-		for (uint8_t indx = 0; indx < ADC_CONVERTED_DATA_BUFFER_SIZE; indx++)
-		{
-			summaVolts += aIIRfilterConvertedData[indx];
-		}
-		IIRVoltsAverage = (IIRVoltsAverage + (float) summaVolts) / (ADC_CONVERTED_DATA_BUFFER_SIZE + 1);
-
+//		for (uint8_t indx = 0; indx < ADC_CONVERTED_DATA_BUFFER_SIZE; indx++)
+//		{
+//			summaVolts += aIIRfilterConvertedData[indx];
+//		}
+//		IIRVoltsAverage = (IIRVoltsAverage + (float) summaVolts) / (ADC_CONVERTED_DATA_BUFFER_SIZE + 1);
+		
 		summaVolts = 0;
 		for (uint8_t indx = 0; indx < ADC_CONVERTED_DATA_BUFFER_SIZE; indx++)
 		{
 			summaVolts += aFIRfilterConvertedData[indx];
 		}
 		FIRVoltsAverage = (FIRVoltsAverage + (float) summaVolts) / (ADC_CONVERTED_DATA_BUFFER_SIZE + 1);
-
+		
 	}
 	/**********************************************************************************************************/
 	(void) aADCvoltsData; /*чтобы не ругался на неиспользуемость переменной*/
@@ -249,19 +233,19 @@ static void SystemClock_Config(void)
 	RCC_ClkInitTypeDef RCC_ClkInitStruct;
 	RCC_OscInitTypeDef RCC_OscInitStruct;
 	HAL_StatusTypeDef ret = HAL_OK;
-
+	
 	/*!< Supply configuration update enable */
 	HAL_PWREx_ConfigSupply(PWR_LDO_SUPPLY);
-
+	
 	/* The voltage scaling allows optimizing the power consumption when the device is
 	 clocked below the maximum system frequency, to update the voltage scaling value
 	 regarding system frequency refer to product datasheet.  */
 	__HAL_PWR_VOLTAGESCALING_CONFIG(PWR_REGULATOR_VOLTAGE_SCALE1);
-
+	
 	while (!__HAL_PWR_GET_FLAG(PWR_FLAG_VOSRDY))
 	{
 	}
-
+	
 	/* Enable HSE Oscillator and activate PLL with HSE as source */
 	RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_HSE;
 	RCC_OscInitStruct.HSEState = RCC_HSE_ON;
@@ -269,14 +253,14 @@ static void SystemClock_Config(void)
 	RCC_OscInitStruct.CSIState = RCC_CSI_OFF;
 	RCC_OscInitStruct.PLL.PLLState = RCC_PLL_ON;
 	RCC_OscInitStruct.PLL.PLLSource = RCC_PLLSOURCE_HSE;
-
+	
 	RCC_OscInitStruct.PLL.PLLM = 4;
 	RCC_OscInitStruct.PLL.PLLN = 400;
 	RCC_OscInitStruct.PLL.PLLFRACN = 0;
 	RCC_OscInitStruct.PLL.PLLP = 2;
 	RCC_OscInitStruct.PLL.PLLR = 2;
 	RCC_OscInitStruct.PLL.PLLQ = 4;
-
+	
 	RCC_OscInitStruct.PLL.PLLVCOSEL = RCC_PLL1VCOWIDE;
 	RCC_OscInitStruct.PLL.PLLRGE = RCC_PLL1VCIRANGE_1;
 	ret = HAL_RCC_OscConfig(&RCC_OscInitStruct);
@@ -284,11 +268,11 @@ static void SystemClock_Config(void)
 	{
 		Error_Handler();
 	}
-
+	
 	/* Select PLL as system clock source and configure  bus clocks dividers */
 	RCC_ClkInitStruct.ClockType = (RCC_CLOCKTYPE_SYSCLK | RCC_CLOCKTYPE_HCLK | RCC_CLOCKTYPE_D1PCLK1 | RCC_CLOCKTYPE_PCLK1 |
 	RCC_CLOCKTYPE_PCLK2 | RCC_CLOCKTYPE_D3PCLK1);
-
+	
 	RCC_ClkInitStruct.SYSCLKSource = RCC_SYSCLKSOURCE_PLLCLK;
 	RCC_ClkInitStruct.SYSCLKDivider = RCC_SYSCLK_DIV1;
 	RCC_ClkInitStruct.AHBCLKDivider = RCC_HCLK_DIV2;
@@ -301,7 +285,7 @@ static void SystemClock_Config(void)
 	{
 		Error_Handler();
 	}
-
+	
 }
 /**
  * @brief  This function is executed in case of error occurrence.
@@ -311,7 +295,7 @@ static void SystemClock_Config(void)
 static void Error_Handler(void)
 {
 	/* Turn LED3 on */
-	BSP_LED_On(LED3);
+//	BSP_LED_On(LED3);
 	while (1)
 	{
 	}
@@ -348,9 +332,14 @@ static void CPU_CACHE_Enable(void)
 {
 	/* Enable I-Cache */
 	SCB_EnableICache();
-
+	
 	/* Enable D-Cache */
 	SCB_EnableDCache();
+}
+
+static void TIM_Config(void)
+{
+	
 }
 
 /**
@@ -361,7 +350,7 @@ static void CPU_CACHE_Enable(void)
 void HAL_ADC_ConvHalfCpltCallback(ADC_HandleTypeDef *hadc)
 {
 	/* Invalidate Data Cache to get the updated content of the SRAM on the first half of the ADC converted data buffer: 32 bytes */
-	SCB_InvalidateDCache_by_Addr((uint32_t*) &aADCxConvertedData[0], ADC_CONVERTED_DATA_BUFFER_SIZE);
+	SCB_InvalidateDCache_by_Addr((uint32_t*) &aADC1ConvertedData[0], ADC_CONVERTED_DATA_BUFFER_SIZE);
 }
 
 /**
@@ -372,7 +361,7 @@ void HAL_ADC_ConvHalfCpltCallback(ADC_HandleTypeDef *hadc)
 void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef *hadc)
 {
 	/* Invalidate Data Cache to get the updated content of the SRAM on the second half of the ADC converted data buffer: 32 bytes */
-	SCB_InvalidateDCache_by_Addr((uint32_t*) &aADCxConvertedData[ADC_CONVERTED_DATA_BUFFER_SIZE / 2], ADC_CONVERTED_DATA_BUFFER_SIZE);
+	SCB_InvalidateDCache_by_Addr((uint32_t*) &aADC1ConvertedData[ADC_CONVERTED_DATA_BUFFER_SIZE / 2], ADC_CONVERTED_DATA_BUFFER_SIZE);
 }
 /**
  * @}
