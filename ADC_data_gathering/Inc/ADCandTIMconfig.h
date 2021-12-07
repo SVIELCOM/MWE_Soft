@@ -11,6 +11,8 @@
 #include "stm32h7xx_hal.h"
 #include "stm32h7xx_hal_conf.h"
 
+#define ADC_TRIGGER_FROM_TIMER
+
 /*Common ADC settins*/
 /*Данные брать строго из дефайнов HAL */
 #define ADC_CLOCK_SOURCE						RCC_ADCCLKSOURCE_CLKP
@@ -115,5 +117,6 @@
 
 /*fuctions declarations*/
 void TIMforADC_Config(void);
+void ADC_Config(ADC_HandleTypeDef *ADC_Handle, uint32_t ADC_channel);
 
 #endif /* ADCANDTIMCONFIG_H_ */

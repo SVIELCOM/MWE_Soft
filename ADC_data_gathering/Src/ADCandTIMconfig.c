@@ -18,7 +18,7 @@ TIM_HandleTypeDef TimForADC_Handle; /*TIM Handle for triggering ADC declaration*
  * @param ADC_Handle - указатель на хэндлер АЦП
  * @param ADC_channel - номер канала АЦП
  */
-void ADC_Initialization(ADC_HandleTypeDef *ADC_Handle, uint32_t ADC_channel)
+void ADC_Config(ADC_HandleTypeDef *ADC_Handle, uint32_t ADC_channel)
 {
 	ADC_ChannelConfTypeDef sADC_Config; /* ADC channel configuration structure declaration */
 	if (HAL_ADC_DeInit(&ADC_Handle) != HAL_OK)

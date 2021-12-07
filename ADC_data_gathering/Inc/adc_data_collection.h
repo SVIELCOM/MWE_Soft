@@ -15,7 +15,6 @@
 
 #define PCB_VERSION_0_1						//для первой версии платы 
 
-#define ADC_TRIGGER_FROM_TIMER
 // #define ADC_OVERSAMPLING
 
 /* TODO: задействовать использование этих макросов, чтобы иметь возможность переключать разрешение АЦП */
