@@ -139,9 +139,17 @@ void SysTick_Handler(void)
 	HAL_IncTick();
 }
 
-void DMA1_Stream1_IRQHandler(void)
+void DMA2_Stream1_IRQHandler(void)
 {
 	HAL_DMA_IRQHandler(ADC_Handle.DMA_Handle);
 }
 
-/************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/
+void DMA2_Stream1_IRQHandler(void)
+{
+	HAL_DMA_IRQHandler(ADC_Handle.DMA_Handle);
+}
+
+void DMA2_Stream1_IRQHandler(void)
+{
+	HAL_DMA_IRQHandler(ADC_Handle.DMA_Handle);
+}

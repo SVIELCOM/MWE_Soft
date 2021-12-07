@@ -32,7 +32,7 @@ void HAL_ADC_MspInit(ADC_HandleTypeDef *hadc)
 		GPIO_InitStruct.Mode = GPIO_MODE_ANALOG;
 		GPIO_InitStruct.Pull = GPIO_NOPULL;
 		HAL_GPIO_Init(ADC1_CHANNEL_GPIO_PORT, &GPIO_InitStruct);
-		DmaHandle.Instance = DMA1_Stream1;
+		DmaHandle.Instance = ADC1_DMA;
 		DmaHandle.Init.Request = DMA_REQUEST_ADC1;
 		
 		/* Deinitialize  & Initialize the DMA for new transfer */
@@ -43,8 +43,8 @@ void HAL_ADC_MspInit(ADC_HandleTypeDef *hadc)
 		__HAL_LINKDMA(hadc, DMA_Handle, DmaHandle);
 		
 		/* NVIC configuration for DMA Input data interrupt */
-		HAL_NVIC_SetPriority(DMA1_Stream1_IRQn, 1, 0);
-		HAL_NVIC_EnableIRQ(DMA1_Stream1_IRQn);
+		HAL_NVIC_SetPriority(ADC1_DMA_IRQn, 1, 0);
+		HAL_NVIC_EnableIRQ(ADC1_DMA_IRQn);
 		
 	} else if (hadc = ADC2)
 	{
@@ -56,9 +56,9 @@ void HAL_ADC_MspInit(ADC_HandleTypeDef *hadc)
 		GPIO_InitStruct.Mode = GPIO_MODE_ANALOG;
 		GPIO_InitStruct.Pull = GPIO_NOPULL;
 		HAL_GPIO_Init(ADC2_CHANNEL_GPIO_PORT, &GPIO_InitStruct);
-		DmaHandle.Instance = DMA1_Stream1; 					//* TODO  выставить правильное значение*/
-		DmaHandle.Init.Request = DMA_REQUEST_ADC1; 		//* TODO  выставить правильное значение*/
-				
+		DmaHandle.Instance = ADC2_DMA;
+		DmaHandle.Init.Request = DMA_REQUEST_ADC2;
+		
 		/* Deinitialize  & Initialize the DMA for new transfer */
 		HAL_DMA_DeInit(&DmaHandle);
 		HAL_DMA_Init(&DmaHandle);
@@ -67,8 +67,8 @@ void HAL_ADC_MspInit(ADC_HandleTypeDef *hadc)
 		__HAL_LINKDMA(hadc, DMA_Handle, DmaHandle);
 		
 		/* NVIC configuration for DMA Input data interrupt */
-		HAL_NVIC_SetPriority(DMA1_Stream1_IRQn, 1, 0);     //* TODO  выставить правильное значение*/
-		HAL_NVIC_EnableIRQ(DMA1_Stream1_IRQn);				//* TODO  выставить правильное значение*/
+		HAL_NVIC_SetPriority(ADC2_DMA_IRQn, 1, 0);
+		HAL_NVIC_EnableIRQ(ADC2_DMA_IRQn);
 	} else if (hadc = ADC3)
 	{
 		ADC3_CHANNEL_PIN_CLK_ENABLE();     				//* Enable GPIO clock ****************************************/
@@ -79,9 +79,9 @@ void HAL_ADC_MspInit(ADC_HandleTypeDef *hadc)
 		GPIO_InitStruct.Mode = GPIO_MODE_ANALOG;
 		GPIO_InitStruct.Pull = GPIO_NOPULL;
 		HAL_GPIO_Init(ADC3_CHANNEL_GPIO_PORT, &GPIO_InitStruct);
-		DmaHandle.Instance = DMA1_Stream1; 					//* TODO  выставить правильное значение*/
-		DmaHandle.Init.Request = DMA_REQUEST_ADC1; 		//* TODO  выставить правильное значение*/
-				
+		DmaHandle.Instance = ADC3_DMA;
+		DmaHandle.Init.Request = DMA_REQUEST_ADC3;
+		
 		/* Deinitialize  & Initialize the DMA for new transfer */
 		HAL_DMA_DeInit(&DmaHandle);
 		HAL_DMA_Init(&DmaHandle);
@@ -90,8 +90,8 @@ void HAL_ADC_MspInit(ADC_HandleTypeDef *hadc)
 		__HAL_LINKDMA(hadc, DMA_Handle, DmaHandle);
 		
 		/* NVIC configuration for DMA Input data interrupt */
-		HAL_NVIC_SetPriority(DMA1_Stream1_IRQn, 1, 0);     //* TODO  выставить правильное значение*/
-		HAL_NVIC_EnableIRQ(DMA1_Stream1_IRQn);				//* TODO  выставить правильное значение*/
+		HAL_NVIC_SetPriority(ADC3_DMA_IRQn, 1, 0);
+		HAL_NVIC_EnableIRQ(ADC3_DMA_IRQn);
 	}
 	
 	/*##- 2- Configure peripheral GPIO #########################################*/
