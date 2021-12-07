@@ -10,6 +10,7 @@
 ADC_HandleTypeDef ADC1_Handle; /* ADC1 handle declaration */
 ADC_HandleTypeDef ADC2_Handle; /* ADC2 handle declaration */
 ADC_HandleTypeDef ADC3_Handle; /* ADC3 handle declaration */
+
 TIM_HandleTypeDef TimForADC_Handle; /*TIM Handle for triggering ADC declaration*/
 
 /* ### - Initialize ADC peripheral #################################### */
@@ -84,11 +85,10 @@ void ADC_Config(ADC_HandleTypeDef *ADC_Handle, uint32_t ADC_channel)
 }
 
 #if defined (ADC_TRIGGER_FROM_TIMER)
-void TIM_for_ADC_Config(TIM_TypeDef timer)
+void TIM_for_ADC_Config(TIM_TypeDef *timer)
 {
-	TIM_HandleTypeDef TimHandle;
 	
-	TimHandle.Instance = timer; /* Set timer instance */
+	TimForADC_Handle.Instance = timer; /* Set timer instance */
 	TIM_MasterConfigTypeDef master_timer_config;
 	RCC_ClkInitTypeDef clk_init_struct = { 0 };/* Temporary variable to retrieve RCC clock configuration */
 	TIM_OC_InitTypeDef sConfigOC = { 0 };
@@ -124,13 +124,15 @@ void TIM_for_ADC_Config(TIM_TypeDef timer)
 	/* (computation for timer 16 bits, additional + 1 to round the prescaler up) */
 	timer_prescaler = (timer_clock_frequency / (TIMER_PRESCALER_MAX_VALUE * TIMER_FREQUENCY_RANGE_MIN)) + 1;
 	
+	/**** TODO: проверить правильность формирования частоты импульсов таймера */
+
 	/* Configure timer parameters */
-	TimHandle.Init.Period = ((timer_clock_frequency / (timer_prescaler * TIMER_FREQUENCY)) - 1);
-	TimHandle.Init.Prescaler = (timer_prescaler - 1);
-	TimHandle.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
-	TimHandle.Init.CounterMode = TIM_COUNTERMODE_UP;
-	TimHandle.Init.RepetitionCounter = 20;
-	TimHandle.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_DISABLE;
+	TimForADC_Handle.Init.Period = ((timer_clock_frequency / (timer_prescaler * TIMER_FREQUENCY)) - 1);
+	TimForADC_Handle.Init.Prescaler = (timer_prescaler - 1);
+	TimForADC_Handle.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
+	TimForADC_Handle.Init.CounterMode = TIM_COUNTERMODE_UP;
+	TimForADC_Handle.Init.RepetitionCounter = TIMER_NB_PULSES;
+	TimForADC_Handle.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_DISABLE;
 	
 	if (HAL_TIM_Base_Init(&TimHandle) != HAL_OK)
 	{
@@ -139,27 +141,27 @@ void TIM_for_ADC_Config(TIM_TypeDef timer)
 	}
 	
 	sClockSourceConfig.ClockSource = TIM_CLOCKSOURCE_INTERNAL;
-	if (HAL_TIM_ConfigClockSource(&TimHandle, &sClockSourceConfig) != HAL_OK)
+	if (HAL_TIM_ConfigClockSource(&TimForADC_Handle, &sClockSourceConfig) != HAL_OK)
 	{
 		Error_Handler();
 	}
 	
-	if (HAL_TIM_OC_Init(&TimHandle) != HAL_OK)
+	if (HAL_TIM_OC_Init(&TimForADC_Handle) != HAL_OK)
 	{
 		Error_Handler();
 	}
 	
-	if (HAL_TIM_OnePulse_Init(&TimHandle, TIM_OPMODE_SINGLE) != HAL_OK)
+	if (HAL_TIM_OnePulse_Init(&TimForADC_Handle, TIM_OPMODE_SINGLE) != HAL_OK)
 	{
 		Error_Handler();
 	}
 	
 	/* Timer TRGO selection */
-	master_timer_config.MasterOutputTrigger = TIM_TRGO_OC1;
+	master_timer_config.MasterOutputTrigger = TIM_TRGO_OC1;							//* Это триггер для старта ADC. Формируется, когда срабатывает сравнение */
 	master_timer_config.MasterOutputTrigger2 = TIM_TRGO2_RESET;
 	master_timer_config.MasterSlaveMode = TIM_MASTERSLAVEMODE_DISABLE;
 	
-	if (HAL_TIMEx_MasterConfigSynchronization(&TimHandle, &master_timer_config) != HAL_OK)
+	if (HAL_TIMEx_MasterConfigSynchronization(&TimForADC_Handle, &master_timer_config) != HAL_OK)
 	{
 		/* Timer TRGO selection Error */
 		Error_Handler();
@@ -172,7 +174,7 @@ void TIM_for_ADC_Config(TIM_TypeDef timer)
 	sConfigOC.OCFastMode = TIM_OCFAST_DISABLE;
 	sConfigOC.OCIdleState = TIM_OCIDLESTATE_RESET;
 	sConfigOC.OCNIdleState = TIM_OCNIDLESTATE_RESET;
-	if (HAL_TIM_OC_ConfigChannel(&TimHandle, &sConfigOC, TIM_CHANNEL_1) != HAL_OK)
+	if (HAL_TIM_OC_ConfigChannel(&TimForADC_Handle, &sConfigOC, TIM_CHANNEL_1) != HAL_OK)
 	{
 		Error_Handler();
 	}
@@ -193,6 +195,6 @@ void TIM_for_ADC_Config(TIM_TypeDef timer)
 
 	 */
 
-//	HAL_TIM_MspPostInit(&TimHandle);
+//	HAL_TIM_MspPostInit(&TimForADC_Handle);
 }
 #endif

@@ -112,6 +112,7 @@
 #define TIMER_FREQUENCY                ((uint32_t) 	2000)    				/* Timer frequency (unit: Hz). With a timer 16 bits and time base freq min 1Hz, range is min=1Hz, max=32kHz. */
 #define TIMER_FREQUENCY_RANGE_MIN      ((uint32_t)    1)    				/* Timer minimum frequency (unit: Hz), used to calculate frequency range. With a timer 16 bits, maximum frequency will be 32000 times this value. */
 #define TIMER_PRESCALER_MAX_VALUE      (0xFFFF-1)           				/* Timer prescaler maximum value (0xFFFF for a timer 16 bits) */
+#define TIMER_NB_PULSES						(ADC_CONVERTED_DATA_BUFFER_SIZE-1)	/* Number of timer pulses */	
 
 #endif /* ADC_TRIGGER_FROM_TIMER */
 
