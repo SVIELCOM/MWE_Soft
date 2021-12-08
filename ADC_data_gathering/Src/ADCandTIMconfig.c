@@ -22,7 +22,7 @@ TIM_HandleTypeDef TimForADC_Handle; /*TIM Handle for triggering ADC declaration*
 void ADC_Config(ADC_HandleTypeDef *ADC_Handle, uint32_t ADC_channel)
 {
 	ADC_ChannelConfTypeDef sADC_Config; /* ADC channel configuration structure declaration */
-	if (HAL_ADC_DeInit(&ADC_Handle) != HAL_OK)
+	if (HAL_ADC_DeInit(ADC_Handle) != HAL_OK)
 	{
 		/* ADC de-initialization Error */
 		Error_Handler();
@@ -60,13 +60,13 @@ void ADC_Config(ADC_HandleTypeDef *ADC_Handle, uint32_t ADC_channel)
 #endif
 	
 	/* Initialize ADC peripheral according to the passed parameters */
-	if (HAL_ADC_Init(&ADC_Handle) != HAL_OK)
+	if (HAL_ADC_Init(ADC_Handle) != HAL_OK)
 	{
 		Error_Handler();
 	}
 	
 	/* Start calibration ############################################ */
-	if (HAL_ADCEx_Calibration_Start(&ADC_Handle, ADC_CALIB_OFFSET, ADC_SINGLE_ENDED) != HAL_OK)
+	if (HAL_ADCEx_Calibration_Start(ADC_Handle, ADC_CALIB_OFFSET, ADC_SINGLE_ENDED) != HAL_OK)
 	{
 		Error_Handler();
 	}
@@ -78,7 +78,7 @@ void ADC_Config(ADC_HandleTypeDef *ADC_Handle, uint32_t ADC_channel)
 	sADC_Config.SingleDiff = ADC_SINGLE_ENDED; /* Single-ended input channel */
 	sADC_Config.OffsetNumber = ADC_OFFSET_NONE; /* No offset subtraction */
 	sADC_Config.Offset = 0; /* Parameter discarded because offset correction is disabled */
-	if (HAL_ADC_ConfigChannel(&ADC_Handle, &sADC_Config) != HAL_OK)
+	if (HAL_ADC_ConfigChannel(ADC_Handle, &sADC_Config) != HAL_OK)
 	{
 		Error_Handler();
 	}
@@ -134,7 +134,7 @@ void TIM_for_ADC_Config(TIM_TypeDef *timer)
 	TimForADC_Handle.Init.RepetitionCounter = TIMER_NB_PULSES;
 	TimForADC_Handle.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_DISABLE;
 	
-	if (HAL_TIM_Base_Init(&TimHandle) != HAL_OK)
+	if (HAL_TIM_Base_Init(&TimForADC_Handle) != HAL_OK)
 	{
 		/* Timer initialization Error */
 		Error_Handler();

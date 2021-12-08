@@ -47,72 +47,9 @@ int main(void)
 	//BSP_LED_Init(LED3);
 	TIM_Config();
 	
-	/******************Замутил тут шляпу для проверки фильтрации тупым усреднением и фильтром IIR *************/
-	/*настройка фильтра хорошо описана тут https://schaumont.dyn.wpi.edu/ece4703b21/lecture7.html#:~:text=considerable%20performance%20improvement.-,IIR%20Designs%20using%20ARM%20CMSIS%20DSP,-Just%20as%20with*/
-
-	/*данные для IIR фильтра*/
-	/*
-	 #define IIR_FILTER_NUM_STAGES	2  // количество секций 2го порядка в фильтре
-	 float64_t IIRfilterCoefficients[IIR_FILTER_NUM_STAGES * 5] = { 1.00383902, -1.87017398, 0.87516701, 1.87065422, -0.87852579, 1.00383902, -1.87017398, 0.87516701, 1.87065422, -0.87852579 };
-	 float64_t IIRfilter_taps[4 * IIR_FILTER_NUM_STAGES];
-	 */
-	/*данные для FIR фильтра*/
-#define FIR_FILTER_NUM_STAGES	21  /* количество секций фильтра*/
-	
-	/*коэффициенты фильтра*/
-	float32_t FIRfilterCoefficients[FIR_FILTER_NUM_STAGES] = { 0.0072524808347225189208984375, 0.009322776459157466888427734375, 0.01530767977237701416015625, 0.02464949898421764373779296875,
-			0.0364511311054229736328125, 0.04956446588039398193359375, 0.062704540789127349853515625, 0.07457792758941650390625, 0.084012426435947418212890625, 0.0900747776031494140625,
-			0.09216459095478057861328125, 0.0900747776031494140625, 0.084012426435947418212890625, 0.07457792758941650390625, 0.062704540789127349853515625, 0.04956446588039398193359375,
-			0.0364511311054229736328125, 0.02464949898421764373779296875, 0.01530767977237701416015625, 0.009322776459157466888427734375, 0.0072524808347225189208984375 };
-	
-	float32_t FIRfilter_taps[FIR_FILTER_NUM_STAGES + ADC_CONVERTED_DATA_BUFFER_SIZE - 1];
-	
-	arm_biquad_casd_df1_inst_f32 IIRfilterInstance; /*структура для работы функции*/
-	arm_fir_instance_f32 FIRfilterInstance; /*структура для работы функции*/
-	
-	static float32_t VoltADCCoeffitient; /*TODO: потом переделать на вычисление из заданного количества бит дискретизации*/
-	VoltADCCoeffitient = 3.3f / 65536;
-	
-	float32_t VoltsAverage, FIRVoltsAverage; /* IIRVoltsAverage - removed */
-	VoltsAverage = 0.0f; /* переменные для усреднения */
-	
-	/*вызов инициализации фильтров*/
-	arm_fir_init_f32(&FIRfilterInstance, FIR_FILTER_NUM_STAGES, FIRfilterCoefficients, FIRfilter_taps, ADC_CONVERTED_DATA_BUFFER_SIZE);
-//	arm_biquad_cascade_df1_init_f32(&IIRfilterInstance, IIR_FILTER_NUM_STAGES, IIRfilterCoefficients, IIRfilter_taps);
-	
 	/* Infinite Loop */
 	while (1)
 	{
-		for (uint8_t indx = 0; indx < ADC_CONVERTED_DATA_BUFFER_SIZE; indx++) /*сформируем массив, в котором будут данные в вольтах*/
-		{
-			aADCvoltsData[indx] = (float32_t) aADC1ConvertedData[indx] * VoltADCCoeffitient;
-		}
-		/* считаем тупое среднее*/
-		float32_t summa = 0;
-		for (uint8_t indx = 0; indx < ADC_CONVERTED_DATA_BUFFER_SIZE; indx++)
-		{
-			summa += aADCvoltsData[indx];
-		}
-		VoltsAverage = (VoltsAverage + (float) summa) / (ADC_CONVERTED_DATA_BUFFER_SIZE + 1);
-		/************************/
-
-		/* закидывавем массив в фильтры*/
-		// arm_biquad_cascade_df1_f32(&IIRfilterInstance, aADCvoltsData, aIIRfilterConvertedData, ADC_CONVERTED_DATA_BUFFER_SIZE);
-		arm_fir_f32(&FIRfilterInstance, aADCvoltsData, aFIRfilterConvertedData, ADC_CONVERTED_DATA_BUFFER_SIZE);
-		
-		float32_t summaVolts = 0; /*если потом использовать, то убрать эту и использовать одну переменную для суммы*/
-//		for (uint8_t indx = 0; indx < ADC_CONVERTED_DATA_BUFFER_SIZE; indx++)
-//		{
-//			summaVolts += aIIRfilterConvertedData[indx];
-//		}
-//		IIRVoltsAverage = (IIRVoltsAverage + (float) summaVolts) / (ADC_CONVERTED_DATA_BUFFER_SIZE + 1);
-		
-		summaVolts = 0;
-		for (uint8_t indx = 0; indx < ADC_CONVERTED_DATA_BUFFER_SIZE; indx++)
-		{
-			summaVolts += aFIRfilterConvertedData[indx];
-		}
-		FIRVoltsAverage = (FIRVoltsAverage + (float) summaVolts) / (ADC_CONVERTED_DATA_BUFFER_SIZE + 1);
 		
 	}
 	/**********************************************************************************************************/
@@ -255,22 +192,7 @@ static void CPU_CACHE_Enable(void)
  * @param  hadc: ADC handle
  * @retval None
  */
-void HAL_ADC_ConvHalfCpltCallback(ADC_HandleTypeDef *hadc)
-{
-	/* Invalidate Data Cache to get the updated content of the SRAM on the first half of the ADC converted data buffer: 32 bytes */
-	SCB_InvalidateDCache_by_Addr((uint32_t*) &aADC1ConvertedData[0], ADC_CONVERTED_DATA_BUFFER_SIZE);
-}
 
-/**
- * @brief  Conversion DMA half-transfer callback in non-blocking mode
- * @param  hadc: ADC handle
- * @retval None
- */
-void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef *hadc)
-{
-	/* Invalidate Data Cache to get the updated content of the SRAM on the second half of the ADC converted data buffer: 32 bytes */
-	SCB_InvalidateDCache_by_Addr((uint32_t*) &aADC1ConvertedData[ADC_CONVERTED_DATA_BUFFER_SIZE / 2], ADC_CONVERTED_DATA_BUFFER_SIZE);
-}
 /**
  * @}
  */

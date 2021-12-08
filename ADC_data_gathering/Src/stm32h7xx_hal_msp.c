@@ -20,7 +20,7 @@ void HAL_ADC_MspInit(ADC_HandleTypeDef *hadc)
 	DmaHandle.Init.Mode = DMA_CIRCULAR;
 	DmaHandle.Init.Priority = DMA_PRIORITY_MEDIUM;
 	
-	if (hadc = ADC1)
+	if (hadc->Instance == ADC1)
 	{
 		/*##-1- Enable peripherals and GPIO Clocks #################################*/
 
@@ -46,7 +46,7 @@ void HAL_ADC_MspInit(ADC_HandleTypeDef *hadc)
 		HAL_NVIC_SetPriority(ADC1_DMA_IRQn, 1, 0);
 		HAL_NVIC_EnableIRQ(ADC1_DMA_IRQn);
 		
-	} else if (hadc = ADC2)
+	} else if (hadc->Instance == ADC2)
 	{
 		ADC2_CHANNEL_PIN_CLK_ENABLE();     				//* Enable GPIO clock ****************************************/
 		ADC2_CLK_ENABLE();     								//* ADC Periph clock enable */
@@ -69,7 +69,7 @@ void HAL_ADC_MspInit(ADC_HandleTypeDef *hadc)
 		/* NVIC configuration for DMA Input data interrupt */
 		HAL_NVIC_SetPriority(ADC2_DMA_IRQn, 1, 0);
 		HAL_NVIC_EnableIRQ(ADC2_DMA_IRQn);
-	} else if (hadc = ADC3)
+	} else if (hadc->Instance == ADC3)
 	{
 		ADC3_CHANNEL_PIN_CLK_ENABLE();     				//* Enable GPIO clock ****************************************/
 		ADC3_CLK_ENABLE();     								//* ADC Periph clock enable */
@@ -114,7 +114,7 @@ void HAL_ADC_MspDeInit(ADC_HandleTypeDef *hadc)
 	/*##-1- Reset peripherals ##################################################*/
 	ADC1_FORCE_RESET();
 	ADC2_FORCE_RESET();
-	ADC3_FORCE_RESET()
+	ADC3_FORCE_RESET();
 	ADC1_RELEASE_RESET();
 	ADC2_RELEASE_RESET();
 	ADC3_RELEASE_RESET();
