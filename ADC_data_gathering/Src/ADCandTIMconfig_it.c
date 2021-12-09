@@ -18,8 +18,8 @@
  */
 
 /* Includes ------------------------------------------------------------------*/
+#include <ADCandTIMconfig_it.h>
 #include "ADCandTIMconfig.h"
-#include "stm32h7xx_it.h"
 
 extern ADC_HandleTypeDef ADC1_Handle; /* ADC1 handle declaration */
 extern ADC_HandleTypeDef ADC2_Handle; /* ADC1 handle declaration */
