@@ -23,7 +23,7 @@
 
 /* Private function prototypes -----------------------------------------------*/
 static void SystemClock_Config(void);
-static void Error_Handler(void);
+// static void Error_Handler(void);
 static void CPU_CACHE_Enable(void);
 
 /* Private functions ---------------------------------------------------------*/
@@ -37,7 +37,7 @@ int main(void)
 {
 	
 	/* Enable the CPU Cache */
-//	CPU_CACHE_Enable();
+	CPU_CACHE_Enable();
 	HAL_Init();
 	
 	/* Configure the system clock to 400 MHz */
@@ -45,15 +45,11 @@ int main(void)
 	
 	/* Initialize LED3 */
 	//BSP_LED_Init(LED3);
-	TIM_Config();
-	
 	/* Infinite Loop */
 	while (1)
 	{
 		
 	}
-	/**********************************************************************************************************/
-	(void) aADCvoltsData; /*чтобы не ругался на неиспользуемость переменной*/
 }
 
 /**
@@ -142,14 +138,16 @@ static void SystemClock_Config(void)
  * @param  None
  * @retval None
  */
-static void Error_Handler(void)
-{
-	/* Turn LED3 on */
-//	BSP_LED_On(LED3);
-	while (1)
-	{
-	}
-}
+/*
+ static void Error_Handler(void)
+ {
+ 
+ //	BSP_LED_On(LED3);
+ while (1)
+ {
+ }
+ }
+ */
 
 #ifdef  USE_FULL_ASSERT
 

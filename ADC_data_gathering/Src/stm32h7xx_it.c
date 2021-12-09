@@ -18,24 +18,12 @@
  */
 
 /* Includes ------------------------------------------------------------------*/
-#include "main.h"
+#include "ADCandTIMconfig.h"
 #include "stm32h7xx_it.h"
 
-/** @addtogroup STM32H7xx_HAL_Examples
- * @{
- */
-
-/** @addtogroup ADC_DMA_Transfer
- * @{
- */
-
-/* Private typedef -----------------------------------------------------------*/
-/* Private define ------------------------------------------------------------*/
-/* Private macro -------------------------------------------------------------*/
-/* Private variables ---------------------------------------------------------*/
-
-/* Private function prototypes -----------------------------------------------*/
-/* Private functions ---------------------------------------------------------*/
+extern ADC_HandleTypeDef ADC1_Handle; /* ADC1 handle declaration */
+extern ADC_HandleTypeDef ADC2_Handle; /* ADC1 handle declaration */
+extern ADC_HandleTypeDef ADC3_Handle; /* ADC1 handle declaration */
 
 /******************************************************************************/
 /*            Cortex-M7 Processor Exceptions Handlers                         */
@@ -139,17 +127,19 @@ void SysTick_Handler(void)
 	HAL_IncTick();
 }
 
-void DMA2_Stream1_IRQHandler(void)
+/** Следить за тем, чтобы эти хендлеры в стартапе назывались так же! */
+
+void DMA2_STR4_IRQHandler(void)
 {
-	HAL_DMA_IRQHandler(ADC_Handle.DMA_Handle);
+	HAL_DMA_IRQHandler(ADC1_Handle.DMA_Handle);
 }
 
-void DMA2_Stream1_IRQHandler(void)
+void DMA2_STR5_IRQHandler(void)
 {
-	HAL_DMA_IRQHandler(ADC_Handle.DMA_Handle);
+	HAL_DMA_IRQHandler(ADC2_Handle.DMA_Handle);
 }
 
-void DMA2_Stream1_IRQHandler(void)
+void DMA2_STR6_IRQHandler(void)
 {
-	HAL_DMA_IRQHandler(ADC_Handle.DMA_Handle);
+	HAL_DMA_IRQHandler(ADC3_Handle.DMA_Handle);
 }

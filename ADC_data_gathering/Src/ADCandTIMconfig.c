@@ -85,6 +85,7 @@ void ADC_Config(ADC_HandleTypeDef *ADC_Handle, uint32_t ADC_channel)
 }
 
 #if defined (ADC_TRIGGER_FROM_TIMER)
+
 void TIM_for_ADC_Config(TIM_TypeDef *timer)
 {
 	
@@ -198,3 +199,13 @@ void TIM_for_ADC_Config(TIM_TypeDef *timer)
 //	HAL_TIM_MspPostInit(&TimForADC_Handle);
 }
 #endif
+
+void Error_Handler(void)
+{
+	/* Turn LED3 on */
+//	BSP_LED_On(LED3);
+	while (1)
+	{
+	}
+}
+

@@ -10,15 +10,42 @@
 
 #include "stm32h7xx_hal.h"
 #include "stm32h7xx_hal_conf.h"
-#include "adc_data_collection.h"
+// #include "adc_data_collection.h"
 
 #define ADC_TRIGGER_FROM_TIMER
+#define PCB_VERSION_0_1						//для первой версии платы 
+#define ADC_bits		16U						/* ADC resolution */
+#define ADC_CONVERTED_DATA_BUFFER_SIZE ((uint32_t)  32)		/* Size of array aADCxConvertedData[] must be 32 bytes aligned ,needed for cache maintenance purpose */
+
+#if (ADC_bits==8U)
+#define ADC_RANGE                   ((uint32_t)  255) 	/* Max digital value with a full range of 8 bits */
+#elif (ADC_bits==10U)
+#define ADC_RANGE                   ((uint32_t) 1023)    /* Max digital value with a full range of 12 bits */
+#elif (ADC_bits==12U)
+#define ADC_RANGE                   ((uint32_t) 4095)    /* Max digital value with a full range of 12 bits */
+#elif (ADC_bits==14U)
+#define ADC_RANGE                   ((uint32_t)16383)    /* Max digital value with a full range of 14 bits */
+#else
+#define ADC_RANGE                   ((uint32_t)65535)    /* Max digital value with a full range of 16 bits */
+#endif 																	/* ADC_bits */
 
 /*Common ADC settins*/
 /*Данные брать строго из дефайнов HAL */
 #define ADC_CLOCK_SOURCE						RCC_ADCCLKSOURCE_CLKP
 #define ADC_CLOCK_PRESCALER					ADC_CLOCK_ASYNC_DIV2	/* Asynchronous clock mode, input ADC clock divided by 2*/
-#define ADC_RESOLUTION							ADC_RESOLUTION_16B	/* 16-bit resolution for converted data */
+
+#if 		(ADC_bits==8U)
+#define 	ADC_RESOLUTION							ADC_RESOLUTION_8B		/* 8-bit resolution for converted data */
+#elif 	(ADC_bits==10U)
+#define 	ADC_RESOLUTION							ADC_RESOLUTION_10B	/* 10-bit resolution for converted data */
+#elif 	(ADC_bits==12U)
+#define 	ADC_RESOLUTION							ADC_RESOLUTION_12B	/* 12-bit resolution for converted data */
+#elif 	(ADC_bits==14U)
+#define 	ADC_RESOLUTION							ADC_RESOLUTION_14B	/* 14-bit resolution for converted data */
+#else
+#define 	ADC_RESOLUTION							ADC_RESOLUTION_16B	/* 16-bit resolution for converted data */
+#endif
+
 #define ADC_SAMPLING_TIME						ADC_SAMPLETIME_8CYCLES_5
 
 /* Definition for ADC1 clock resources */
@@ -117,8 +144,9 @@
 
 #endif /* ADC_TRIGGER_FROM_TIMER */
 
-/*fuctions declarations*/
-void TIMforADC_Config(void);
+/*Function declarations*/
+void Error_Handler(void);
+void TIM_for_ADC_Config(TIM_TypeDef *timer);
 void ADC_Config(ADC_HandleTypeDef *ADC_Handle, uint32_t ADC_channel);
 
 #endif /* ADCANDTIMCONFIG_H_ */
