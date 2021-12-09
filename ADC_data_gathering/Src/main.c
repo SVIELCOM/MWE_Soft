@@ -23,6 +23,7 @@
 
 /* Private function prototypes -----------------------------------------------*/
 static void SystemClock_Config(void);
+void PeriphCommonClock_Config(void);
 // static void Error_Handler(void);
 static void CPU_CACHE_Enable(void);
 
@@ -40,15 +41,16 @@ int main(void)
 	CPU_CACHE_Enable();
 	HAL_Init();
 	
-	/* Configure the system clock to 400 MHz */
+	/* Configure the system clock to */
 	SystemClock_Config();
-	
-	/* Initialize LED3 */
-	//BSP_LED_Init(LED3);
-	/* Infinite Loop */
+	PeriphCommonClock_Config();
+	StartADCdataCollection();
 	while (1)
 	{
-		
+		if (GetAllFreshAnalogChannelsValues(ADC_CONVERTED_DATA_BUFFER_SIZE) == SUCCESS)
+		{
+			
+		}
 	}
 }
 
@@ -133,6 +135,29 @@ static void SystemClock_Config(void)
 	}
 	
 }
+
+void PeriphCommonClock_Config(void)
+{
+	RCC_PeriphCLKInitTypeDef PeriphClkInitStruct = { 0 };
+	
+	/** Initializes the peripherals clock
+	 */
+	PeriphClkInitStruct.PeriphClockSelection = RCC_PERIPHCLK_ADC;
+	PeriphClkInitStruct.PLL2.PLL2M = 4;
+	PeriphClkInitStruct.PLL2.PLL2N = 90;
+	PeriphClkInitStruct.PLL2.PLL2P = 3;
+	PeriphClkInitStruct.PLL2.PLL2Q = 2;
+	PeriphClkInitStruct.PLL2.PLL2R = 2;
+	PeriphClkInitStruct.PLL2.PLL2RGE = RCC_PLL2VCIRANGE_1;
+	PeriphClkInitStruct.PLL2.PLL2VCOSEL = RCC_PLL2VCOMEDIUM;
+	PeriphClkInitStruct.PLL2.PLL2FRACN = 0;
+	PeriphClkInitStruct.AdcClockSelection = RCC_ADCCLKSOURCE_PLL2;
+	if (HAL_RCCEx_PeriphCLKConfig(&PeriphClkInitStruct) != HAL_OK)
+	{
+		Error_Handler();
+	}
+}
+
 /**
  * @brief  This function is executed in case of error occurrence.
  * @param  None
