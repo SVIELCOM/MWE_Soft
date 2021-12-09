@@ -29,5 +29,7 @@ float32_t AnalogCH3_collected_data;     //* adc1 collected, filtered, averaged d
 /* Functions declaration */
 void StartADCdataCollection(void);
 uint8_t GetAllFreshAnalogChannelsValues(uint32_t buffer_size);
+void HAL_ADC_ConvHalfCpltCallback(ADC_HandleTypeDef *hadc);
+void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef *hadc);
 
 #endif /* ADC_DATA_COLLECTION_H_ */

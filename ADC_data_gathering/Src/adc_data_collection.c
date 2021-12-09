@@ -55,6 +55,7 @@ void StartADCdataCollection(void)
 	{
 		Error_Handler();
 	}
+	ADC_ConvCplt = 0x0; /* reset flag "ADCs conversions complete" */
 #if defined (ADC_TRIGGER_FROM_TIMER)
 	/*Start TIMER*/
 	HAL_TIM_OC_Start(&TimForADC_Handle, TIM_CHANNEL_1);
@@ -76,6 +77,7 @@ uint8_t GetAllFreshAnalogChannelsValues(uint32_t buffer_size)
 		AnalogCH1_collected_data = GetAnalogChannelValue(aADC1ConvertedData, ADC_RANGE, buffer_size);
 		AnalogCH2_collected_data = GetAnalogChannelValue(aADC2ConvertedData, ADC_RANGE, buffer_size);
 		AnalogCH3_collected_data = GetAnalogChannelValue(aADC3ConvertedData, ADC_RANGE, buffer_size);
+		ADC_ConvCplt = 0x0; /* reset flag "ADCs conversions complete" */
 		return SUCCESS;
 	}
 	
