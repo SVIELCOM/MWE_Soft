@@ -123,16 +123,16 @@ void TIM_for_ADC_Config(TIM_TypeDef *timer)
 	
 	/* Timer prescaler calculation */
 	/* (computation for timer 16 bits, additional + 1 to round the prescaler up) */
-	timer_prescaler = (timer_clock_frequency / (TIMER_PRESCALER_MAX_VALUE * TIMER_FREQUENCY_RANGE_MIN)) + 1;
+	timer_prescaler = (timer_clock_frequency / (TIM_FOR_ADC_PRESCALER_MAX_VALUE * TIM_FOR_ADC_FREQUENCY_RANGE_MIN)) + 1;
 	
 	/**** TODO: проверить правильность формирования частоты импульсов таймера */
 
 	/* Configure timer parameters */
-	TimForADC_Handle.Init.Period = ((timer_clock_frequency / (timer_prescaler * TIMER_FREQUENCY)) - 1);
+	TimForADC_Handle.Init.Period = ((timer_clock_frequency / (timer_prescaler * TIM_FOR_ADC_FREQUENCY)) - 1);
 	TimForADC_Handle.Init.Prescaler = (timer_prescaler - 1);
 	TimForADC_Handle.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
 	TimForADC_Handle.Init.CounterMode = TIM_COUNTERMODE_UP;
-	TimForADC_Handle.Init.RepetitionCounter = TIMER_NB_PULSES;
+	TimForADC_Handle.Init.RepetitionCounter = TIM_FOR_ADC_NB_PULSES;
 	TimForADC_Handle.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_DISABLE;
 	
 	if (HAL_TIM_Base_Init(&TimForADC_Handle) != HAL_OK)

@@ -38,7 +38,7 @@ int main(void)
 {
 	
 	/* Enable the CPU Cache */
-	CPU_CACHE_Enable();
+//	CPU_CACHE_Enable();
 	HAL_Init();
 	
 	/* Configure the system clock to */

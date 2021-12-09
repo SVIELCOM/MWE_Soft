@@ -1,5 +1,5 @@
 /* Includes ------------------------------------------------------------------*/
-#include "main.h"
+#include "ADCandTIMconfig.h"
 
 /**
  * @brief  ADC MSP Init
@@ -100,6 +100,63 @@ void HAL_ADC_MspInit(ADC_HandleTypeDef *hadc)
 	/*##- 3- Configure DMA #####################################################*/
 }
 
+void HAL_TIM_Base_MspInit(TIM_HandleTypeDef *htim)
+{
+	/* TIM peripheral clock enable */
+	if (htim->Instance == TIM_FOR_ADC)
+	{
+		TIM_FOR_ADC_CLK_ENABLE();
+	} else
+	{
+		/* Error management can be implemented here */
+	}
+	
+}
+
+/****
+ * Если нужна нога, на которой будут импульсы таймера для АЦП, то настроить!
+ * правльность GPIO не проверялась!
+ * @param htim
+ */
+void HAL_TIM_MspPostInit(TIM_HandleTypeDef *htim)
+{
+	GPIO_InitTypeDef GPIO_InitStruct = { 0 };
+	if (htim->Instance == TIM_FOR_ADC)
+	{
+		__HAL_RCC_GPIOE_CLK_ENABLE();
+		/**TIM15 GPIO Configuration
+		 PE5     ------> TIM15_CH1
+		 */
+		GPIO_InitStruct.Pin = GPIO_PIN_5;
+		GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
+		GPIO_InitStruct.Pull = GPIO_NOPULL;
+		GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+		GPIO_InitStruct.Alternate = GPIO_AF4_TIM15;
+		HAL_GPIO_Init(GPIOE, &GPIO_InitStruct);
+		
+	}
+}
+
+/**
+ * @brief TIM MSP de-initialization
+ *        This function frees the hardware resources used in this example:
+ *          - Disable clock of peripheral
+ * @param htim: TIM handle pointer
+ * @retval None
+ */
+void HAL_TIM_Base_MspDeInit(TIM_HandleTypeDef *htim)
+{
+	/* TIM peripheral clock reset */
+	if (htim->Instance == TIM_FOR_ADC)
+	{
+		TIM_FOR_ADC_FORCE_RESET();
+		TIM_FOR_ADC_RELEASE_RESET();
+	} else
+	{
+		/* Error management can be implemented here */
+	}
+}
+
 /**
  * @brief ADC MSP De-Initialization
  *        This function frees the hardware resources used in this example:
@@ -111,20 +168,23 @@ void HAL_ADC_MspInit(ADC_HandleTypeDef *hadc)
  */
 void HAL_ADC_MspDeInit(ADC_HandleTypeDef *hadc)
 {
-	/*##-1- Reset peripherals ##################################################*/
-	ADC1_FORCE_RESET();
-	ADC2_FORCE_RESET();
-	ADC3_FORCE_RESET();
-	ADC1_RELEASE_RESET();
-	ADC2_RELEASE_RESET();
-	ADC3_RELEASE_RESET();
-	/* ADC Periph clock disable
-	 (automatically reset all ADC instances of the ADC common group) */
-	__HAL_RCC_ADC12_CLK_DISABLE();
-	
-	/*##-2- Disable peripherals and GPIO Clocks ################################*/
-	/* De-initialize the ADC Channel GPIO pin */
-	HAL_GPIO_DeInit(ADC1_CHANNEL_GPIO_PORT, ADC1_CHANNEL_PIN);
-	HAL_GPIO_DeInit(ADC2_CHANNEL_GPIO_PORT, ADC2_CHANNEL_PIN);
-	HAL_GPIO_DeInit(ADC3_CHANNEL_GPIO_PORT, ADC3_CHANNEL_PIN);
+	if (hadc->Instance == ADC1)
+	{
+		ADC1_FORCE_RESET();
+		ADC1_RELEASE_RESET();
+		__HAL_RCC_ADC12_CLK_DISABLE();
+		HAL_GPIO_DeInit(ADC1_CHANNEL_GPIO_PORT, ADC1_CHANNEL_PIN);
+	} else if (hadc->Instance == ADC1)
+	{
+		ADC2_FORCE_RESET();
+		ADC2_RELEASE_RESET();
+		__HAL_RCC_ADC12_CLK_DISABLE();
+		HAL_GPIO_DeInit(ADC2_CHANNEL_GPIO_PORT, ADC2_CHANNEL_PIN);
+	} else if (hadc->Instance == ADC1)
+	{
+		ADC3_FORCE_RESET();
+		ADC3_RELEASE_RESET();
+		__HAL_RCC_ADC3_CLK_DISABLE();
+		HAL_GPIO_DeInit(ADC3_CHANNEL_GPIO_PORT, ADC3_CHANNEL_PIN);
+	}
 }

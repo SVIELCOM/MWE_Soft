@@ -31,7 +31,7 @@
 
 /*Common ADC settins*/
 /*Данные брать строго из дефайнов HAL */
-#define ADC_CLOCK_SOURCE						RCC_ADCCLKSOURCE_CLKP
+#define ADC_CLOCK_SOURCE						RCC_ADCCLKSOURCE_PLL2
 #define ADC_CLOCK_PRESCALER					ADC_CLOCK_ASYNC_DIV2	/* Asynchronous clock mode, input ADC clock divided by 2*/
 
 #if 		(ADC_bits==8U)
@@ -107,20 +107,20 @@
 #define ADC3_CHANNEL                    ADC_CHANNEL_1 
 
 /* Definition of ADCx DMA resources */
-#define ADC1_DMA_CLK_ENABLE()           __HAL_RCC_DMA1_CLK_ENABLE()
+#define ADC1_DMA_CLK_ENABLE()           __HAL_RCC_DMA2_CLK_ENABLE()			//*  WARNING! */
 #define ADC1_DMA                        DMA2_Stream4
 #define ADC1_DMA_IRQn                   DMA2_Stream4_IRQn
-#define ADC1_DMA_IRQHandler             DMA2_Stream4_IRQHandler
+#define ADC1_DMA_IRQHandler             DMA2_STR4_IRQHandler
 
-#define ADC2_DMA_CLK_ENABLE()           __HAL_RCC_DMA1_CLK_ENABLE() 
+#define ADC2_DMA_CLK_ENABLE()           __HAL_RCC_DMA2_CLK_ENABLE() 			//*  WARNING! */
 #define ADC2_DMA                        DMA2_Stream5						
 #define ADC2_DMA_IRQn                   DMA2_Stream5_IRQn				
-#define ADC2_DMA_IRQHandler             DMA2_Stream5_IRQHandler		
+#define ADC2_DMA_IRQHandler             DMA2_STR5_IRQHandler		
 
-#define ADC3_DMA_CLK_ENABLE()           __HAL_RCC_DMA1_CLK_ENABLE()	
+#define ADC3_DMA_CLK_ENABLE()           __HAL_RCC_DMA2_CLK_ENABLE()			//*  WARNING! */
 #define ADC3_DMA                        DMA2_Stream6						
 #define ADC3_DMA_IRQn                   DMA2_Stream6_IRQn				
-#define ADC3_DMA_IRQHandler             DMA2_Stream6_IRQHandler		
+#define ADC3_DMA_IRQHandler             DMA2_STR6_IRQHandler		
 
 /* Definition of ADCx NVIC resources */
 #define ADC12_IRQn                       ADC_IRQn
@@ -134,13 +134,13 @@
 /* ## Definition of TIM for ADC related resources ################################### */
 /* Definition of TIMx clock resources */
 #define TIM_FOR_ADC                     TIM15   							 		/* Может быть только TIM1,TIM8 или 15 (только они могут выдать заданное количество тактов). Все они на AHB2 и APB2 */
-#define TIMx_CLK_ENABLE()               __HAL_RCC_TIM15_CLK_ENABLE() 		/* при замене таймера, все эти параметры надо менять на свои от каждого таймера*/
-#define TIMx_FORCE_RESET()              __HAL_RCC_TIM15_FORCE_RESET()
-#define TIMx_RELEASE_RESET()            __HAL_RCC_TIM15_RELEASE_RESET()
-#define TIMER_FREQUENCY                ((uint32_t) 	2000)    				/* Timer frequency (unit: Hz). With a timer 16 bits and time base freq min 1Hz, range is min=1Hz, max=32kHz. */
-#define TIMER_FREQUENCY_RANGE_MIN      ((uint32_t)    1)    					/* Timer minimum frequency (unit: Hz), used to calculate frequency range. With a timer 16 bits, maximum frequency will be 32000 times this value. */
-#define TIMER_PRESCALER_MAX_VALUE      (0xFFFF-1)           					/* Timer prescaler maximum value (0xFFFF for a timer 16 bits) */
-#define TIMER_NB_PULSES						(ADC_CONVERTED_DATA_BUFFER_SIZE-1)	/* Number of timer pulses */
+#define TIM_FOR_ADC_CLK_ENABLE()               __HAL_RCC_TIM15_CLK_ENABLE() 		/* при замене таймера, все эти параметры надо менять на свои от каждого таймера*/
+#define TIM_FOR_ADC_FORCE_RESET()              __HAL_RCC_TIM15_FORCE_RESET()
+#define TIM_FOR_ADC_RELEASE_RESET()            __HAL_RCC_TIM15_RELEASE_RESET()
+#define TIM_FOR_ADC_FREQUENCY                ((uint32_t) 	2000)    				/* Timer frequency (unit: Hz). With a timer 16 bits and time base freq min 1Hz, range is min=1Hz, max=32kHz. */
+#define TIM_FOR_ADC_FREQUENCY_RANGE_MIN      ((uint32_t)    1)    					/* Timer minimum frequency (unit: Hz), used to calculate frequency range. With a timer 16 bits, maximum frequency will be 32000 times this value. */
+#define TIM_FOR_ADC_PRESCALER_MAX_VALUE      (0xFFFF-1)           					/* Timer prescaler maximum value (0xFFFF for a timer 16 bits) */
+#define TIM_FOR_ADC_NB_PULSES						(ADC_CONVERTED_DATA_BUFFER_SIZE-1)	/* Number of timer pulses */
 
 #endif /* ADC_TRIGGER_FROM_TIMER */
 
