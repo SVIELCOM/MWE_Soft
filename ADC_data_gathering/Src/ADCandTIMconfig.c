@@ -7,9 +7,12 @@
 
 #include "ADCandTIMconfig.h"
 
-ADC_HandleTypeDef ADC1_Handle; /* ADC1 handle declaration */
-ADC_HandleTypeDef ADC2_Handle; /* ADC2 handle declaration */
-ADC_HandleTypeDef ADC3_Handle; /* ADC3 handle declaration */
+ADC_HandleTypeDef ADC1_Handle; 			//* ADC1 handle declaration */
+ADC_HandleTypeDef ADC2_Handle; 			//* ADC2 handle declaration */
+ADC_HandleTypeDef ADC3_Handle; 			//* ADC3 handle declaration */
+DMA_HandleTypeDef ADC1_DMA_Handle;		//* ADC1 handle declaration */
+DMA_HandleTypeDef ADC2_DMA_Handle;		//* ADC2 handle declaration */
+DMA_HandleTypeDef ADC3_DMA_Handle;		//* ADC3 handle declaration */
 
 TIM_HandleTypeDef TimForADC_Handle; /*TIM Handle for triggering ADC declaration*/
 

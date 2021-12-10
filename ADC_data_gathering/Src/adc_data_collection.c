@@ -8,10 +8,9 @@
 
 /*Extern variables */
 extern ADC_HandleTypeDef ADC1_Handle; /* ADC1 handle declaration */
-extern ADC_HandleTypeDef ADC2_Handle; /* ADC1 handle declaration */
-extern ADC_HandleTypeDef ADC3_Handle; /* ADC1 handle declaration */
+extern ADC_HandleTypeDef ADC2_Handle; /* ADC2 handle declaration */
+extern ADC_HandleTypeDef ADC3_Handle; /* ADC3 handle declaration */
 extern TIM_HandleTypeDef TimForADC_Handle; /*TIM Handle for triggering ADC extern declaration*/
-
 /* static Functions*/
 static void DataFiltering(float32_t *pSrc, float32_t *pDst, uint32_t buffer_size);
 static float32_t AverageCalc(float32_t *AverageVolts, uint32_t buffer_size);
@@ -39,35 +38,33 @@ void StartADCdataCollection(void)
 	ADC3_Handle.Instance = ADC_3;
 	
 	ADC_Config(&ADC1_Handle, ADC1_CHANNEL);
-//	ADC_Config(&ADC2_Handle, ADC2_CHANNEL);
-//	ADC_Config(&ADC3_Handle, ADC3_CHANNEL);
+	ADC_Config(&ADC2_Handle, ADC2_CHANNEL);
+	ADC_Config(&ADC3_Handle, ADC3_CHANNEL);
 	
 	TIM_for_ADC_Config(TIM_FOR_ADC);
 	
-#if defined (ADC_TRIGGER_FROM_TIMER)
-	/*Start TIMER*/
-	HAL_TIM_OC_Start(&TimForADC_Handle, TIM_CHANNEL_1);
-#endif
-	
 	/* Start conversion in DMA mode */
+
 	if (HAL_ADC_Start_DMA(&ADC1_Handle, (uint32_t*) aADC1ConvertedData, ADC_CONVERTED_DATA_BUFFER_SIZE) != HAL_OK)
 	{
 		Error_Handler();
 	}
 	
-	/*	if (HAL_ADC_Start_DMA(&ADC2_Handle, (uint32_t*) aADC2ConvertedData, ADC_CONVERTED_DATA_BUFFER_SIZE) != HAL_OK)
-	 {
-	 Error_Handler();
-	 }
-	 
-
-	 if (HAL_ADC_Start_DMA(&ADC3_Handle, (uint32_t*) aADC3ConvertedData, ADC_CONVERTED_DATA_BUFFER_SIZE) != HAL_OK)
-	 {
-	 Error_Handler();
-	 }
-	 */
-
+	if (HAL_ADC_Start_DMA(&ADC2_Handle, (uint32_t*) aADC2ConvertedData, ADC_CONVERTED_DATA_BUFFER_SIZE) != HAL_OK)
+	{
+		Error_Handler();
+	}
+	
+	if (HAL_ADC_Start_DMA(&ADC3_Handle, (uint32_t*) aADC3ConvertedData, ADC_CONVERTED_DATA_BUFFER_SIZE) != HAL_OK)
+	{
+		Error_Handler();
+	}
+	
 	ADC_ConvCplt = 0x0; /* reset flag "ADCs conversions complete" */
+#if defined (ADC_TRIGGER_FROM_TIMER)
+	/*Start TIMER*/
+	HAL_TIM_OC_Start(&TimForADC_Handle, TIM_CHANNEL_1);
+#endif
 	
 }
 

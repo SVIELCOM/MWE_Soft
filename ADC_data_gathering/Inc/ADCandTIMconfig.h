@@ -122,6 +122,10 @@
 #define ADC3_DMA_IRQn                   DMA2_Stream6_IRQn				
 #define ADC3_DMA_IRQHandler             DMA2_STR6_IRQHandler		
 
+#define ADC_DMA_PRIORITY					 DMA_PRIORITY_MEDIUM						//* DMA transfer for ADC priority */
+#define ADC_DMA_FIFOMODE					 DMA_FIFOMODE_DISABLE	
+#define ADC_DMA_FIFOLEVEL					 DMA_FIFO_THRESHOLD_FULL				//* DMA transfer for ADC fifo level*/
+
 /* Definition of ADCx NVIC resources */
 #define ADC12_IRQn                       ADC_IRQn
 #define ADC12_IRQHandler                 ADC_IRQHandler

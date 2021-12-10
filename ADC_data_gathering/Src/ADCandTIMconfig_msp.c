@@ -1,6 +1,10 @@
 /* Includes ------------------------------------------------------------------*/
 #include "ADCandTIMconfig.h"
 
+extern DMA_HandleTypeDef ADC1_DMA_Handle;     //* ADC1 handle declaration */
+extern DMA_HandleTypeDef ADC2_DMA_Handle;     //* ADC2 handle declaration */
+extern DMA_HandleTypeDef ADC3_DMA_Handle;     //* ADC3 handle declaration */
+
 /**
  * @brief  ADC MSP Init
  * @param  hadc : ADC handle
@@ -9,16 +13,6 @@
 void HAL_ADC_MspInit(ADC_HandleTypeDef *hadc)
 {
 	GPIO_InitTypeDef GPIO_InitStruct;
-	static DMA_HandleTypeDef DmaHandle;
-	
-	/* common DMA settings */
-	DmaHandle.Init.Direction = DMA_PERIPH_TO_MEMORY;
-	DmaHandle.Init.PeriphInc = DMA_PINC_DISABLE;
-	DmaHandle.Init.MemInc = DMA_MINC_ENABLE;
-	DmaHandle.Init.PeriphDataAlignment = DMA_PDATAALIGN_HALFWORD;
-	DmaHandle.Init.MemDataAlignment = DMA_MDATAALIGN_HALFWORD;
-	DmaHandle.Init.Mode = DMA_CIRCULAR;
-	DmaHandle.Init.Priority = DMA_PRIORITY_MEDIUM;
 	
 	if (hadc->Instance == ADC1)
 	{
@@ -32,15 +26,25 @@ void HAL_ADC_MspInit(ADC_HandleTypeDef *hadc)
 		GPIO_InitStruct.Mode = GPIO_MODE_ANALOG;
 		GPIO_InitStruct.Pull = GPIO_NOPULL;
 		HAL_GPIO_Init(ADC1_CHANNEL_GPIO_PORT, &GPIO_InitStruct);
-		DmaHandle.Instance = ADC1_DMA;
-		DmaHandle.Init.Request = DMA_REQUEST_ADC1;
+		/* DMA settings */
+		ADC1_DMA_Handle.Instance = ADC1_DMA;
+		ADC1_DMA_Handle.Init.Request = DMA_REQUEST_ADC1;
+		ADC1_DMA_Handle.Init.Direction = DMA_PERIPH_TO_MEMORY;
+		ADC1_DMA_Handle.Init.PeriphInc = DMA_PINC_DISABLE;
+		ADC1_DMA_Handle.Init.MemInc = DMA_MINC_ENABLE;
+		ADC1_DMA_Handle.Init.PeriphDataAlignment = DMA_PDATAALIGN_HALFWORD;
+		ADC1_DMA_Handle.Init.MemDataAlignment = DMA_MDATAALIGN_HALFWORD;
+		ADC1_DMA_Handle.Init.Mode = DMA_CIRCULAR;
+		ADC1_DMA_Handle.Init.Priority = ADC_DMA_PRIORITY;
+		ADC1_DMA_Handle.Init.FIFOMode = ADC_DMA_FIFOMODE;
+		ADC1_DMA_Handle.Init.FIFOThreshold = ADC_DMA_FIFOLEVEL;
 		
 		/* Deinitialize  & Initialize the DMA for new transfer */
-		HAL_DMA_DeInit(&DmaHandle);
-		HAL_DMA_Init(&DmaHandle);
+		HAL_DMA_DeInit(&ADC1_DMA_Handle);
+		HAL_DMA_Init(&ADC1_DMA_Handle);
 		
 		/* Associate the DMA handle */
-		__HAL_LINKDMA(hadc, DMA_Handle, DmaHandle);
+		__HAL_LINKDMA(hadc, DMA_Handle, ADC1_DMA_Handle);
 		
 		/* NVIC configuration for DMA Input data interrupt */
 		HAL_NVIC_SetPriority(ADC1_DMA_IRQn, 1, 0);
@@ -56,15 +60,24 @@ void HAL_ADC_MspInit(ADC_HandleTypeDef *hadc)
 		GPIO_InitStruct.Mode = GPIO_MODE_ANALOG;
 		GPIO_InitStruct.Pull = GPIO_NOPULL;
 		HAL_GPIO_Init(ADC2_CHANNEL_GPIO_PORT, &GPIO_InitStruct);
-		DmaHandle.Instance = ADC2_DMA;
-		DmaHandle.Init.Request = DMA_REQUEST_ADC2;
+		ADC2_DMA_Handle.Instance = ADC2_DMA;
+		ADC2_DMA_Handle.Init.Request = DMA_REQUEST_ADC2;
+		ADC2_DMA_Handle.Init.Direction = DMA_PERIPH_TO_MEMORY;
+		ADC2_DMA_Handle.Init.PeriphInc = DMA_PINC_DISABLE;
+		ADC2_DMA_Handle.Init.MemInc = DMA_MINC_ENABLE;
+		ADC2_DMA_Handle.Init.PeriphDataAlignment = DMA_PDATAALIGN_HALFWORD;
+		ADC2_DMA_Handle.Init.MemDataAlignment = DMA_MDATAALIGN_HALFWORD;
+		ADC2_DMA_Handle.Init.Mode = DMA_CIRCULAR;
+		ADC2_DMA_Handle.Init.Priority = ADC_DMA_PRIORITY;
+		ADC2_DMA_Handle.Init.FIFOMode = ADC_DMA_FIFOMODE;
+		ADC2_DMA_Handle.Init.FIFOThreshold = ADC_DMA_FIFOLEVEL;
 		
 		/* Deinitialize  & Initialize the DMA for new transfer */
-		HAL_DMA_DeInit(&DmaHandle);
-		HAL_DMA_Init(&DmaHandle);
+		HAL_DMA_DeInit(&ADC2_DMA_Handle);
+		HAL_DMA_Init(&ADC2_DMA_Handle);
 		
 		/* Associate the DMA handle */
-		__HAL_LINKDMA(hadc, DMA_Handle, DmaHandle);
+		__HAL_LINKDMA(hadc, DMA_Handle, ADC2_DMA_Handle);
 		
 		/* NVIC configuration for DMA Input data interrupt */
 		HAL_NVIC_SetPriority(ADC2_DMA_IRQn, 1, 0);
@@ -79,15 +92,24 @@ void HAL_ADC_MspInit(ADC_HandleTypeDef *hadc)
 		GPIO_InitStruct.Mode = GPIO_MODE_ANALOG;
 		GPIO_InitStruct.Pull = GPIO_NOPULL;
 		HAL_GPIO_Init(ADC3_CHANNEL_GPIO_PORT, &GPIO_InitStruct);
-		DmaHandle.Instance = ADC3_DMA;
-		DmaHandle.Init.Request = DMA_REQUEST_ADC3;
+		ADC3_DMA_Handle.Instance = ADC3_DMA;
+		ADC3_DMA_Handle.Init.Request = DMA_REQUEST_ADC3;
+		ADC3_DMA_Handle.Init.Direction = DMA_PERIPH_TO_MEMORY;
+		ADC3_DMA_Handle.Init.PeriphInc = DMA_PINC_DISABLE;
+		ADC3_DMA_Handle.Init.MemInc = DMA_MINC_ENABLE;
+		ADC3_DMA_Handle.Init.PeriphDataAlignment = DMA_PDATAALIGN_HALFWORD;
+		ADC3_DMA_Handle.Init.MemDataAlignment = DMA_MDATAALIGN_HALFWORD;
+		ADC3_DMA_Handle.Init.Mode = DMA_CIRCULAR;
+		ADC3_DMA_Handle.Init.Priority = ADC_DMA_PRIORITY;
+		ADC3_DMA_Handle.Init.FIFOMode = ADC_DMA_FIFOMODE;
+		ADC3_DMA_Handle.Init.FIFOThreshold = ADC_DMA_FIFOLEVEL;
 		
 		/* Deinitialize  & Initialize the DMA for new transfer */
-		HAL_DMA_DeInit(&DmaHandle);
-		HAL_DMA_Init(&DmaHandle);
+		HAL_DMA_DeInit(&ADC3_DMA_Handle);
+		HAL_DMA_Init(&ADC3_DMA_Handle);
 		
 		/* Associate the DMA handle */
-		__HAL_LINKDMA(hadc, DMA_Handle, DmaHandle);
+		__HAL_LINKDMA(hadc, DMA_Handle, ADC3_DMA_Handle);
 		
 		/* NVIC configuration for DMA Input data interrupt */
 		HAL_NVIC_SetPriority(ADC3_DMA_IRQn, 1, 0);
