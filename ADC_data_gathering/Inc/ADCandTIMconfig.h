@@ -46,7 +46,7 @@
 #define 	ADC_RESOLUTION							ADC_RESOLUTION_16B	/* 16-bit resolution for converted data */
 #endif
 
-#define ADC_SAMPLING_TIME						ADC_SAMPLETIME_8CYCLES_5
+#define ADC_SAMPLING_TIME						ADC_SAMPLETIME_16CYCLES_5		//* sample time! It is not conversion time! */
 
 /* Definition for ADC1 clock resources */
 
@@ -84,10 +84,11 @@
 #define ADC1_CHANNEL_PIN_CLK_ENABLE()   __HAL_RCC_GPIOF_CLK_ENABLE()
 #if defined (PCB_VERSION_0_1)
 #define ADC1_CHANNEL_PIN                GPIO_PIN_12 								// for version PCB-0.1 - ADC1 GPIO_PIN_12
-#else 
-#define ADC1_CHANNEL_PIN                GPIO_PIN_11 								// for newer versions PCBs - ADC1 GPIO_PIN_11
-#endif
 #define ADC1_CHANNEL_GPIO_PORT          GPIOF
+#else 
+#define ADC1_CHANNEL_PIN                GPIO_PIN_1 								// for newer versions PCBs - ADC1 GPIO_PIN_11
+#define ADC1_CHANNEL_GPIO_PORT          GPIOB
+#endif
 
 #define ADC2_CHANNEL_PIN_CLK_ENABLE()   __HAL_RCC_GPIOF_CLK_ENABLE()
 #define ADC2_CHANNEL_PIN                GPIO_PIN_13 								// ADC2 GPIO pin number */
@@ -101,7 +102,7 @@
 #if defined (PCB_VERSION_0_1)
 #define ADC1_CHANNEL                    ADC_CHANNEL_6 							//* for version PCB-0.1 - ADC1 CHANNEL 6*/
 #else 
-#define ADC1_CHANNEL                    ADC_CHANNEL_2 							// for newer versions PCBs - ADC1 CHANNEL 2
+#define ADC1_CHANNEL                    ADC_CHANNEL_5 							// for newer versions PCBs - ADC1 CHANNEL 2
 #endif
 #define ADC2_CHANNEL                    ADC_CHANNEL_2 
 #define ADC3_CHANNEL                    ADC_CHANNEL_1 
