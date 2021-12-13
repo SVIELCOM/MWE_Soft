@@ -142,7 +142,7 @@ static float32_t AverageCalc(float32_t *pSrc, uint32_t buffer_size)
 	average = 0.0f; /* переменные для усреднения */
 	sum = 0.0f;
 	
-	for (uint8_t indx = 0; indx < buffer_size; indx++)
+	for (uint32_t indx = 0; indx < buffer_size; indx++)
 	{
 		sum += pSrc[indx];
 	}
@@ -161,7 +161,7 @@ static void ADCdata_to_volts(uint32_t ADC_max_value, volatile uint16_t *pSrc, fl
 {
 	float32_t VoltADCCoeffitient;
 	VoltADCCoeffitient = 3.3f / ADC_max_value; /* 3.3 - is the Vref in volts */
-	for (uint8_t indx = 0; indx < size_of_data_array; indx++)
+	for (uint32_t indx = 0; indx < size_of_data_array; indx++)
 	{
 		pDst[indx] = (float32_t) pSrc[indx] * VoltADCCoeffitient;
 	}

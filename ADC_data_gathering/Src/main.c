@@ -49,7 +49,10 @@ int main(void)
 	{
 		if (GetAllFreshAnalogChannelsValues(ADC_CONVERTED_DATA_BUFFER_SIZE) == SUCCESS)
 		{
-			
+			while (1)
+			{
+				
+			}
 		}
 	}
 }

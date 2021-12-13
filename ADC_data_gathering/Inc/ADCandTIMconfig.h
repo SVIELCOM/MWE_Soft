@@ -15,7 +15,7 @@
 #define ADC_TRIGGER_FROM_TIMER
 #define PCB_VERSION_0_1						//для первой версии платы 
 #define ADC_bits		16U						/* ADC resolution */
-#define ADC_CONVERTED_DATA_BUFFER_SIZE ((uint32_t)  32)		/* Size of array aADCxConvertedData[] must be 32 bytes aligned ,needed for cache maintenance purpose */
+#define ADC_CONVERTED_DATA_BUFFER_SIZE ((uint32_t)  255)		/* Size of array aADCxConvertedData[] must be 32 bytes aligned ,needed for cache maintenance purpose */
 
 #if (ADC_bits==8U)
 #define ADC_RANGE                   ((uint32_t)  255) 	/* Max digital value with a full range of 8 bits */
