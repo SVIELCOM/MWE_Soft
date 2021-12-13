@@ -95,7 +95,7 @@ void TIM_for_ADC_Config(TIM_TypeDef *timer)
 	TimForADC_Handle.Instance = timer; /* Set timer instance */
 	TIM_MasterConfigTypeDef master_timer_config;
 	RCC_ClkInitTypeDef clk_init_struct = { 0 };/* Temporary variable to retrieve RCC clock configuration */
-	TIM_OC_InitTypeDef sConfigOC = { 0 };
+//	TIM_OC_InitTypeDef sConfigOC = { 0 };
 //	TIM_BreakDeadTimeConfigTypeDef sBreakDeadTimeConfig = { 0 };
 	TIM_ClockConfigTypeDef sClockSourceConfig = { 0 };
 	uint32_t latency;/* Temporary variable to retrieve Flash Latency */
@@ -135,7 +135,8 @@ void TIM_for_ADC_Config(TIM_TypeDef *timer)
 	TimForADC_Handle.Init.Prescaler = (timer_prescaler - 1);
 	TimForADC_Handle.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
 	TimForADC_Handle.Init.CounterMode = TIM_COUNTERMODE_UP;
-	TimForADC_Handle.Init.RepetitionCounter = TIM_FOR_ADC_NB_PULSES;
+	//TimForADC_Handle.Init.RepetitionCounter = TIM_FOR_ADC_NB_PULSES;
+	TimForADC_Handle.Init.RepetitionCounter = 0x0;
 	TimForADC_Handle.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_DISABLE;
 	
 	if (HAL_TIM_Base_Init(&TimForADC_Handle) != HAL_OK)
@@ -150,18 +151,21 @@ void TIM_for_ADC_Config(TIM_TypeDef *timer)
 		Error_Handler();
 	}
 	
-	if (HAL_TIM_OC_Init(&TimForADC_Handle) != HAL_OK)
-	{
-		Error_Handler();
-	}
-	
-	if (HAL_TIM_OnePulse_Init(&TimForADC_Handle, TIM_OPMODE_SINGLE) != HAL_OK)
-	{
-		Error_Handler();
-	}
-	
+	/* This code for timer RCR-register using **************
+	 if (HAL_TIM_OC_Init(&TimForADC_Handle) != HAL_OK)
+	 {
+	 Error_Handler();
+	 }
+	 
+	 if (HAL_TIM_OnePulse_Init(&TimForADC_Handle, TIM_OPMODE_SINGLE) != HAL_OK)
+	 {
+	 Error_Handler();
+	 }
+	 */
+
 	/* Timer TRGO selection */
-	master_timer_config.MasterOutputTrigger = TIM_TRGO_OC1;							//* Это триггер для старта ADC. Формируется, когда срабатывает сравнение */
+	//master_timer_config.MasterOutputTrigger = TIM_TRGO_OC1;							//* Это триггер для старта ADC. Формируется, когда срабатывает сравнение */
+	master_timer_config.MasterOutputTrigger = TIM_TRGO_UPDATE;
 	master_timer_config.MasterOutputTrigger2 = TIM_TRGO2_RESET;
 	master_timer_config.MasterSlaveMode = TIM_MASTERSLAVEMODE_DISABLE;
 	
@@ -171,18 +175,20 @@ void TIM_for_ADC_Config(TIM_TypeDef *timer)
 		Error_Handler();
 	}
 	
-	sConfigOC.OCMode = TIM_OCMODE_TOGGLE;
-	sConfigOC.Pulse = 0;
-	sConfigOC.OCPolarity = TIM_OCPOLARITY_HIGH;
-	sConfigOC.OCNPolarity = TIM_OCNPOLARITY_HIGH;
-	sConfigOC.OCFastMode = TIM_OCFAST_DISABLE;
-	sConfigOC.OCIdleState = TIM_OCIDLESTATE_RESET;
-	sConfigOC.OCNIdleState = TIM_OCNIDLESTATE_RESET;
-	if (HAL_TIM_OC_ConfigChannel(&TimForADC_Handle, &sConfigOC, TIM_CHANNEL_1) != HAL_OK)
-	{
-		Error_Handler();
-	}
-	
+	/* This code for timer RCR-register using **************
+	 sConfigOC.OCMode = TIM_OCMODE_TOGGLE;
+	 sConfigOC.Pulse = 0;
+	 sConfigOC.OCPolarity = TIM_OCPOLARITY_HIGH;
+	 sConfigOC.OCNPolarity = TIM_OCNPOLARITY_HIGH;
+	 sConfigOC.OCFastMode = TIM_OCFAST_DISABLE;
+	 sConfigOC.OCIdleState = TIM_OCIDLESTATE_RESET;
+	 sConfigOC.OCNIdleState = TIM_OCNIDLESTATE_RESET;
+	 if (HAL_TIM_OC_ConfigChannel(&TimForADC_Handle, &sConfigOC, TIM_CHANNEL_1) != HAL_OK)
+	 {
+	 Error_Handler();
+	 }
+	 */
+
 	/* Так как таймер не использует режим прерывания счета по внешнему сигналу, то можно это выпилить или запилить прерывание
 	 sBreakDeadTimeConfig.OffStateRunMode = TIM_OSSR_DISABLE;
 	 sBreakDeadTimeConfig.OffStateIDLEMode = TIM_OSSI_DISABLE;

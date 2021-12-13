@@ -63,9 +63,12 @@ void StartADCdataCollection(void)
 	ADC_ConvCplt = 0x0; /* reset flag "ADCs conversions complete" */
 #if defined (ADC_TRIGGER_FROM_TIMER)
 	/*Start TIMER*/
-	HAL_TIM_OC_Start(&TimForADC_Handle, TIM_CHANNEL_1);
+	//HAL_TIM_OC_Start(&TimForADC_Handle, TIM_CHANNEL_1); /* Для режима, в котором таймер останавливается по RCR */
+	if (HAL_TIM_Base_Start(&TimForADC_Handle) != HAL_OK)
+	{
+		Error_Handler();
+	}
 #endif
-	
 }
 
 /*******************************
@@ -90,7 +93,7 @@ uint8_t GetAllFreshAnalogChannelsValues(uint32_t buffer_size)
 }
 
 /**
- * 
+ * Функция преобразования в вольты
  * @param ACDxconvertedData			- указатель на массив, преобразованных данных
  */
 static float32_t GetAnalogChannelValue(volatile uint16_t *ACDxconvertedData, uint32_t ADC_Range, uint32_t buffer_size)
@@ -136,6 +139,12 @@ static void DataFiltering(float32_t *pSrc, float32_t *pDst, uint32_t buffer_size
 	arm_fir_f32(&FIRfilterInstance, pSrc, pDst, buffer_size);
 }
 
+/**
+ * 
+ * @param pSrc 			- pointer to source buffer
+ * @param buffer_size	- source buffer size
+ * @return average value from values in source buffer
+ */
 static float32_t AverageCalc(float32_t *pSrc, uint32_t buffer_size)
 {
 	float32_t average, sum;
@@ -153,9 +162,9 @@ static float32_t AverageCalc(float32_t *pSrc, uint32_t buffer_size)
 /**
  * 
  * @param ADC_max_value 	- 		максимальное число, которое может вернуть ADC
- * @param pSrc					-		указатель на входной буфер
- * @param pDst					-		указатель на выходной буфер
- * @param size_of_data_array	-	размер буфера
+ * @param pSrc					-		pointer to source buffer
+ * @param pDst					-		pointer to destination buffer
+ * @param size_of_data_array	-	buffers size
  */
 static void ADCdata_to_volts(uint32_t ADC_max_value, volatile uint16_t *pSrc, float32_t *pDst, uint32_t size_of_data_array)
 {
@@ -167,7 +176,7 @@ static void ADCdata_to_volts(uint32_t ADC_max_value, volatile uint16_t *pSrc, fl
 	}
 }
 
-/** TODO разобраться с этими колбэками */
+/*  колбэк прерывания по DMA, когда преобразована половина заданного массива */
 void HAL_ADC_ConvHalfCpltCallback(ADC_HandleTypeDef *hadc)
 {
 	/* Invalidate Data Cache to get the updated content of the SRAM on the first half of the ADC converted data buffer */
@@ -181,7 +190,7 @@ void HAL_ADC_ConvHalfCpltCallback(ADC_HandleTypeDef *hadc)
 }
 
 /**
- * @brief  Conversion DMA half-transfer callback in non-blocking mode
+ * @brief  Conversion DMA full-transfer callback in non-blocking mode
  * @param  hadc: ADC handle
  * @retval None
  */
@@ -201,6 +210,7 @@ void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef *hadc)
 		SCB_InvalidateDCache_by_Addr((uint32_t*) &aADC3ConvertedData[ADC_CONVERTED_DATA_BUFFER_SIZE / 2], ADC_CONVERTED_DATA_BUFFER_SIZE);
 		ADC_ConvCplt |= 0x4; /* 2-bit set*/
 	}
+	HAL_TIM_Base_Stop(&TimForADC_Handle);
 }
 
 /* TODO запилить ERROR HANDLER*/
