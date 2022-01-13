@@ -4,7 +4,13 @@
 
 /* Includes ------------------------------------------------------------------*/
 
-#include "adc_data_collection.h"
+#include "weight_calc.h"
+
+#define WEIGHT_MANUAL_COEFFITIENTS
+
+#if defined (WEIGHT_MANUAL_COEFFITIENTS)
+
+#endif
 
 #endif /* __MAIN_H */
 

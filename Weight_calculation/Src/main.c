@@ -45,18 +45,29 @@ int main(void)
 	SystemClock_Config();
 	PeriphCommonClock_Config();
 	StartADCdataCollection();
+	
+	/* an example to use the function */
+	weightFormula_t weight_handler; /* create a variable of weightFormula type */
+	float F1 = 10.0; /* fill the coefficients */
+	float F2 = 10.0;
+	float F3 = 30.0;
+	
 	while (1)
 	{
 		if (GetAllFreshAnalogChannelsValues(ADC_CONVERTED_DATA_BUFFER_SIZE) == SUCCESS)
 		{
-			while (1)
-			{
-				
-			}
+			weight_handler.coefficientF1 = &F1; /* fill the structure */
+			weight_handler.coefficientF2 = &F2;
+			weight_handler.coefficientF3 = &F3;
+			weight_handler.motorVoltage = &AnalogCH1_collected_data;
+			weight_handler.motorCurrent = &AnalogCH2_collected_data;
+			weight_handler.motorSpeed = &AnalogCH3_collected_data;
+			getSkipWeight(&weight_handler);
+			
 		}
+		
 	}
 }
-
 /**
  * @brief  System Clock Configuration
  *         The system Clock is configured as follow :
@@ -121,8 +132,7 @@ static void SystemClock_Config(void)
 	}
 	
 	/* Select PLL as system clock source and configure  bus clocks dividers */
-	RCC_ClkInitStruct.ClockType = (RCC_CLOCKTYPE_SYSCLK | RCC_CLOCKTYPE_HCLK | RCC_CLOCKTYPE_D1PCLK1 | RCC_CLOCKTYPE_PCLK1 |
-	RCC_CLOCKTYPE_PCLK2 | RCC_CLOCKTYPE_D3PCLK1);
+	RCC_ClkInitStruct.ClockType = (RCC_CLOCKTYPE_SYSCLK | RCC_CLOCKTYPE_HCLK | RCC_CLOCKTYPE_D1PCLK1 | RCC_CLOCKTYPE_PCLK1 | RCC_CLOCKTYPE_PCLK2 | RCC_CLOCKTYPE_D3PCLK1);
 	
 	RCC_ClkInitStruct.SYSCLKSource = RCC_SYSCLKSOURCE_PLLCLK;
 	RCC_ClkInitStruct.SYSCLKDivider = RCC_SYSCLK_DIV1;
@@ -177,28 +187,6 @@ void PeriphCommonClock_Config(void)
  }
  */
 
-#ifdef  USE_FULL_ASSERT
-
-/**
-  * @brief  Reports the name of the source file and the source line number
-  *         where the assert_param error has occurred.
-  * @param  file: pointer to the source file name
-  * @param  line: assert_param error line source number
-  * @retval None
-  */
-void assert_failed(uint8_t *file, uint32_t line)
-{
-  /* User can add his own implementation to report the file name and line number,
-     ex: printf("Wrong parameters value: file %s on line %d\r\n", file, line) */
-
-  /* Infinite loop */
-  while (1)
-  {
-  }
-}
-
-#endif
-
 /**
  * @brief  CPU L1-Cache enable.
  * @param  None
@@ -213,18 +201,3 @@ static void CPU_CACHE_Enable(void)
 	SCB_EnableDCache();
 }
 
-/**
- * @brief  Conversion complete callback in non-blocking mode
- * @param  hadc: ADC handle
- * @retval None
- */
-
-/**
- * @}
- */
-
-/**
- * @}
- */
-
-/************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/
