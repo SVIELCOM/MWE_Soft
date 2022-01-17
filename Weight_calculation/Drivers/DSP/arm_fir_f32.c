@@ -29,92 +29,92 @@
 #include "arm_math.h"
 
 /**
-  @ingroup groupFilters
+ @ingroup groupFilters
  */
 
 /**
-  @defgroup FIR Finite Impulse Response (FIR) Filters
+ @defgroup FIR Finite Impulse Response (FIR) Filters
 
-  This set of functions implements Finite Impulse Response (FIR) filters
-  for Q7, Q15, Q31, and floating-point data types.  Fast versions of Q15 and Q31 are also provided.
-  The functions operate on blocks of input and output data and each call to the function processes
-  <code>blockSize</code> samples through the filter.  <code>pSrc</code> and
-  <code>pDst</code> points to input and output arrays containing <code>blockSize</code> values.
+ This set of functions implements Finite Impulse Response (FIR) filters
+ for Q7, Q15, Q31, and floating-point data types.  Fast versions of Q15 and Q31 are also provided.
+ The functions operate on blocks of input and output data and each call to the function processes
+ <code>blockSize</code> samples through the filter.  <code>pSrc</code> and
+ <code>pDst</code> points to input and output arrays containing <code>blockSize</code> values.
 
-  @par           Algorithm
-                   The FIR filter algorithm is based upon a sequence of multiply-accumulate (MAC) operations.
-                   Each filter coefficient <code>b[n]</code> is multiplied by a state variable which equals a previous input sample <code>x[n]</code>.
-  <pre>
-      y[n] = b[0] * x[n] + b[1] * x[n-1] + b[2] * x[n-2] + ...+ b[numTaps-1] * x[n-numTaps+1]
-  </pre>
-  @par
-                   \image html FIR.GIF "Finite Impulse Response filter"
-  @par
-                   <code>pCoeffs</code> points to a coefficient array of size <code>numTaps</code>.
-                   Coefficients are stored in time reversed order.
-  @par
-  <pre>
-      {b[numTaps-1], b[numTaps-2], b[N-2], ..., b[1], b[0]}
-  </pre>
-  @par
-                   <code>pState</code> points to a state array of size <code>numTaps + blockSize - 1</code>.
-                   Samples in the state buffer are stored in the following order.
-  @par
-  <pre>
-      {x[n-numTaps+1], x[n-numTaps], x[n-numTaps-1], x[n-numTaps-2]....x[0], x[1], ..., x[blockSize-1]}
-  </pre>
-  @par
-                   Note that the length of the state buffer exceeds the length of the coefficient array by <code>blockSize-1</code>.
-                   The increased state buffer length allows circular addressing, which is traditionally used in the FIR filters,
-                   to be avoided and yields a significant speed improvement.
-                   The state variables are updated after each block of data is processed; the coefficients are untouched.
+ @par           Algorithm
+ The FIR filter algorithm is based upon a sequence of multiply-accumulate (MAC) operations.
+ Each filter coefficient <code>b[n]</code> is multiplied by a state variable which equals a previous input sample <code>x[n]</code>.
+ <pre>
+ y[n] = b[0] * x[n] + b[1] * x[n-1] + b[2] * x[n-2] + ...+ b[numTaps-1] * x[n-numTaps+1]
+ </pre>
+ @par
+ \image html FIR.GIF "Finite Impulse Response filter"
+ @par
+ <code>pCoeffs</code> points to a coefficient array of size <code>numTaps</code>.
+ Coefficients are stored in time reversed order.
+ @par
+ <pre>
+ {b[numTaps-1], b[numTaps-2], b[N-2], ..., b[1], b[0]}
+ </pre>
+ @par
+ <code>pState</code> points to a state array of size <code>numTaps + blockSize - 1</code>.
+ Samples in the state buffer are stored in the following order.
+ @par
+ <pre>
+ {x[n-numTaps+1], x[n-numTaps], x[n-numTaps-1], x[n-numTaps-2]....x[0], x[1], ..., x[blockSize-1]}
+ </pre>
+ @par
+ Note that the length of the state buffer exceeds the length of the coefficient array by <code>blockSize-1</code>.
+ The increased state buffer length allows circular addressing, which is traditionally used in the FIR filters,
+ to be avoided and yields a significant speed improvement.
+ The state variables are updated after each block of data is processed; the coefficients are untouched.
 
-  @par           Instance Structure
-                   The coefficients and state variables for a filter are stored together in an instance data structure.
-                   A separate instance structure must be defined for each filter.
-                   Coefficient arrays may be shared among several instances while state variable arrays cannot be shared.
-                   There are separate instance structure declarations for each of the 4 supported data types.
+ @par           Instance Structure
+ The coefficients and state variables for a filter are stored together in an instance data structure.
+ A separate instance structure must be defined for each filter.
+ Coefficient arrays may be shared among several instances while state variable arrays cannot be shared.
+ There are separate instance structure declarations for each of the 4 supported data types.
 
-  @par           Initialization Functions
-                   There is also an associated initialization function for each data type.
-                   The initialization function performs the following operations:
-                   - Sets the values of the internal structure fields.
-                   - Zeros out the values in the state buffer.
-                   To do this manually without calling the init function, assign the follow subfields of the instance structure:
-                   numTaps, pCoeffs, pState. Also set all of the values in pState to zero.
-  @par
-                   Use of the initialization function is optional.
-                   However, if the initialization function is used, then the instance structure cannot be placed into a const data section.
-                   To place an instance structure into a const data section, the instance structure must be manually initialized.
-                   Set the values in the state buffer to zeros before static initialization.
-                   The code below statically initializes each of the 4 different data type filter instance structures
-  <pre>
-      arm_fir_instance_f32 S = {numTaps, pState, pCoeffs};
-      arm_fir_instance_q31 S = {numTaps, pState, pCoeffs};
-      arm_fir_instance_q15 S = {numTaps, pState, pCoeffs};
-      arm_fir_instance_q7 S =  {numTaps, pState, pCoeffs};
-  </pre>
-                   where <code>numTaps</code> is the number of filter coefficients in the filter; <code>pState</code> is the address of the state buffer;
-                   <code>pCoeffs</code> is the address of the coefficient buffer.
+ @par           Initialization Functions
+ There is also an associated initialization function for each data type.
+ The initialization function performs the following operations:
+ - Sets the values of the internal structure fields.
+ - Zeros out the values in the state buffer.
+ To do this manually without calling the init function, assign the follow subfields of the instance structure:
+ numTaps, pCoeffs, pState. Also set all of the values in pState to zero.
+ @par
+ Use of the initialization function is optional.
+ However, if the initialization function is used, then the instance structure cannot be placed into a const data section.
+ To place an instance structure into a const data section, the instance structure must be manually initialized.
+ Set the values in the state buffer to zeros before static initialization.
+ The code below statically initializes each of the 4 different data type filter instance structures
+ <pre>
+ arm_fir_instance_f32 S = {numTaps, pState, pCoeffs};
+ arm_fir_instance_q31 S = {numTaps, pState, pCoeffs};
+ arm_fir_instance_q15 S = {numTaps, pState, pCoeffs};
+ arm_fir_instance_q7 S =  {numTaps, pState, pCoeffs};
+ </pre>
+ where <code>numTaps</code> is the number of filter coefficients in the filter; <code>pState</code> is the address of the state buffer;
+ <code>pCoeffs</code> is the address of the coefficient buffer.
 
-  @par           Fixed-Point Behavior
-                   Care must be taken when using the fixed-point versions of the FIR filter functions.
-                   In particular, the overflow and saturation behavior of the accumulator used in each function must be considered.
-                   Refer to the function specific documentation below for usage guidelines.
+ @par           Fixed-Point Behavior
+ Care must be taken when using the fixed-point versions of the FIR filter functions.
+ In particular, the overflow and saturation behavior of the accumulator used in each function must be considered.
+ Refer to the function specific documentation below for usage guidelines.
  */
 
 /**
-  @addtogroup FIR
-  @{
+ @addtogroup FIR
+ @{
  */
 
 /**
-  @brief         Processing function for floating-point FIR filter.
-  @param[in]     S          points to an instance of the floating-point FIR filter structure
-  @param[in]     pSrc       points to the block of input data
-  @param[out]    pDst       points to the block of output data
-  @param[in]     blockSize  number of samples to process
-  @return        none
+ @brief         Processing function for floating-point FIR filter.
+ @param[in]     S          points to an instance of the floating-point FIR filter structure
+ @param[in]     pSrc       points to the block of input data
+ @param[out]    pDst       points to the block of output data
+ @param[in]     blockSize  number of samples to process
+ @return        none
  */
 #if defined(ARM_MATH_NEON)
 
@@ -338,31 +338,27 @@ uint32_t blockSize)
 
 }
 #else
-void arm_fir_f32(
-  const arm_fir_instance_f32 * S,
-  const float32_t * pSrc,
-        float32_t * pDst,
-        uint32_t blockSize)
+void arm_fir_f32(const arm_fir_instance_f32 *S, const float32_t *pSrc, float32_t *pDst, uint32_t blockSize)
 {
-        float32_t *pState = S->pState;                 /* State pointer */
-  const float32_t *pCoeffs = S->pCoeffs;               /* Coefficient pointer */
-        float32_t *pStateCurnt;                        /* Points to the current sample of the state */
-        float32_t *px;                                 /* Temporary pointer for state buffer */
-  const float32_t *pb;                                 /* Temporary pointer for coefficient buffer */
-        float32_t acc0;                                /* Accumulator */
-        uint32_t numTaps = S->numTaps;                 /* Number of filter coefficients in the filter */
-        uint32_t i, tapCnt, blkCnt;                    /* Loop counters */
-
+	float64_t *pState = S->pState; 				//* State pointer */
+	const float64_t *pCoeffs = S->pCoeffs;     //* Coefficient pointer */
+	float64_t *pStateCurnt; 						//* Points to the current sample of the state */
+	float64_t *px; 									//* Temporary pointer for state buffer */
+	const float64_t *pb; 							//* Temporary pointer for coefficient buffer */
+	float64_t acc0; 									//* Accumulator */
+	uint32_t numTaps = S->numTaps; 				//* Number of filter coefficients in the filter */
+	uint32_t i, tapCnt, blkCnt; 					//* Loop counters */
+			
 #if defined (ARM_MATH_LOOPUNROLL)
         float32_t acc1, acc2, acc3, acc4, acc5, acc6, acc7;     /* Accumulators */
         float32_t x0, x1, x2, x3, x4, x5, x6, x7;               /* Temporary variables to hold state values */
         float32_t c0;                                           /* Temporary variable to hold coefficient value */
 #endif
-
-  /* S->pState points to state array which contains previous frame (numTaps - 1) samples */
-  /* pStateCurnt points to the location where the new input data should be written */
-  pStateCurnt = &(S->pState[(numTaps - 1U)]);
-
+	
+	/* S->pState points to state array which contains previous frame (numTaps - 1) samples */
+	/* pStateCurnt points to the location where the new input data should be written */
+	pStateCurnt = &(S->pState[(numTaps - 1U)]);
+	
 #if defined (ARM_MATH_LOOPUNROLL)
 
   /* Loop unrolling: Compute 8 output values simultaneously.
@@ -623,54 +619,55 @@ void arm_fir_f32(
   blkCnt = blockSize % 0x8U;
 
 #else
-
-  /* Initialize blkCnt with number of taps */
-  blkCnt = blockSize;
-
+	
+	/* Initialize blkCnt with number of taps */
+	blkCnt = blockSize;
+	
 #endif /* #if defined (ARM_MATH_LOOPUNROLL) */
+	
+	while (blkCnt > 0U)
+	{
+		/* Copy one sample at a time into state buffer */
+		*pStateCurnt++ = *pSrc++;
+		
+		/* Set the accumulator to zero */
+		acc0 = 0.0f;
+		
+		/* Initialize state pointer */
+		px = pState;
+		
+		/* Initialize Coefficient pointer */
+		pb = pCoeffs;
+		
+		i = numTaps;
+		
+		/* Perform the multiply-accumulates */
+		do
+		{
+			/* acc =  b[numTaps-1] * x[n-numTaps-1] + b[numTaps-2] * x[n-numTaps-2] + b[numTaps-3] * x[n-numTaps-3] +...+ b[0] * x[0] */
+			acc0 += *px++ * *pb++;
+			
+			i--;
+		}
+		while (i > 0U);
+		
+		/* Store result in destination buffer. */
+		*pDst++ = acc0;
+		
+		/* Advance state pointer by 1 for the next sample */
+		pState = pState + 1U;
+		
+		/* Decrement loop counter */
+		blkCnt--;
+	}
+	
+	/* Processing is complete.
+	 Now copy the last numTaps - 1 samples to the start of the state buffer.
+	 This prepares the state buffer for the next function call. */
 
-  while (blkCnt > 0U)
-  {
-    /* Copy one sample at a time into state buffer */
-    *pStateCurnt++ = *pSrc++;
-
-    /* Set the accumulator to zero */
-    acc0 = 0.0f;
-
-    /* Initialize state pointer */
-    px = pState;
-
-    /* Initialize Coefficient pointer */
-    pb = pCoeffs;
-
-    i = numTaps;
-
-    /* Perform the multiply-accumulates */
-    do
-    {
-      /* acc =  b[numTaps-1] * x[n-numTaps-1] + b[numTaps-2] * x[n-numTaps-2] + b[numTaps-3] * x[n-numTaps-3] +...+ b[0] * x[0] */
-      acc0 += *px++ * *pb++;
-
-      i--;
-    } while (i > 0U);
-
-    /* Store result in destination buffer. */
-    *pDst++ = acc0;
-
-    /* Advance state pointer by 1 for the next sample */
-    pState = pState + 1U;
-
-    /* Decrement loop counter */
-    blkCnt--;
-  }
-
-  /* Processing is complete.
-     Now copy the last numTaps - 1 samples to the start of the state buffer.
-     This prepares the state buffer for the next function call. */
-
-  /* Points to the start of the state buffer */
-  pStateCurnt = S->pState;
-
+	/* Points to the start of the state buffer */
+	pStateCurnt = S->pState;
+	
 #if defined (ARM_MATH_LOOPUNROLL)
 
   /* Loop unrolling: Compute 4 taps at a time */
@@ -692,24 +689,24 @@ void arm_fir_f32(
   tapCnt = (numTaps - 1U) % 0x4U;
 
 #else
-
-  /* Initialize tapCnt with number of taps */
-  tapCnt = (numTaps - 1U);
-
+	
+	/* Initialize tapCnt with number of taps */
+	tapCnt = (numTaps - 1U);
+	
 #endif /* #if defined (ARM_MATH_LOOPUNROLL) */
-
-  /* Copy remaining data */
-  while (tapCnt > 0U)
-  {
-    *pStateCurnt++ = *pState++;
-
-    /* Decrement loop counter */
-    tapCnt--;
-  }
-
+	
+	/* Copy remaining data */
+	while (tapCnt > 0U)
+	{
+		*pStateCurnt++ = *pState++;
+		
+		/* Decrement loop counter */
+		tapCnt--;
+	}
+	
 }
 
 #endif /* #if defined(ARM_MATH_NEON) */
 /**
-* @} end of FIR group
-*/
+ * @} end of FIR group
+ */

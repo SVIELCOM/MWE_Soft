@@ -48,9 +48,12 @@ int main(void)
 	
 	/* an example to use the function */
 	weightFormula_t weight_handler; /* create a variable of weightFormula type */
-	float F1 = 10.0; /* fill the coefficients */
-	float F2 = 10.0;
-	float F3 = 30.0;
+	float F1 = 0.0068; /* fill the coefficients */
+	float F2 = 0.000040774719673802242609;
+	float F3 = 0.0;
+	float NuTest = 3.0;
+	float NiTest = 1.65;
+	float NwTest = 3.0;
 	
 	while (1)
 	{
@@ -59,9 +62,9 @@ int main(void)
 			weight_handler.coefficientF1 = &F1; /* fill the structure */
 			weight_handler.coefficientF2 = &F2;
 			weight_handler.coefficientF3 = &F3;
-			weight_handler.motorVoltage = &AnalogCH1_collected_data;
-			weight_handler.motorCurrent = &AnalogCH2_collected_data;
-			weight_handler.motorSpeed = &AnalogCH3_collected_data;
+			weight_handler.motorVoltage = &NuTest;     // AnalogCH1_collected_data;
+			weight_handler.motorCurrent = &NiTest;     // AnalogCH2_collected_data;
+			weight_handler.motorSpeed = &NwTest;      //AnalogCH3_collected_data;
 			getSkipWeight(&weight_handler);
 			
 		}

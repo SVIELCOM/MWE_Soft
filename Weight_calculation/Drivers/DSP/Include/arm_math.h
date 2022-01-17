@@ -445,9 +445,9 @@ typedef double float64_t;
 __STATIC_FORCEINLINE q31_t read_q15x2(q15_t *pQ15)
 {
 	q31_t val;
-
+	
 	memcpy(&val, pQ15, 4);
-
+	
 	return (val);
 }
 
@@ -459,10 +459,10 @@ __STATIC_FORCEINLINE q31_t read_q15x2(q15_t *pQ15)
 __STATIC_FORCEINLINE q31_t read_q15x2_ia(q15_t **pQ15)
 {
 	q31_t val;
-
+	
 	memcpy(&val, *pQ15, 4);
 	*pQ15 += 2;
-
+	
 	return (val);
 }
 
@@ -474,10 +474,10 @@ __STATIC_FORCEINLINE q31_t read_q15x2_ia(q15_t **pQ15)
 __STATIC_FORCEINLINE q31_t read_q15x2_da(q15_t **pQ15)
 {
 	q31_t val;
-
+	
 	memcpy(&val, *pQ15, 4);
 	*pQ15 -= 2;
-
+	
 	return (val);
 }
 
@@ -490,7 +490,7 @@ __STATIC_FORCEINLINE q31_t read_q15x2_da(q15_t **pQ15)
 __STATIC_FORCEINLINE void write_q15x2_ia(q15_t **pQ15, q31_t value)
 {
 	q31_t val = value;
-
+	
 	memcpy(*pQ15, &val, 4);
 	*pQ15 += 2;
 }
@@ -504,7 +504,7 @@ __STATIC_FORCEINLINE void write_q15x2_ia(q15_t **pQ15, q31_t value)
 __STATIC_FORCEINLINE void write_q15x2(q15_t *pQ15, q31_t value)
 {
 	q31_t val = value;
-
+	
 	memcpy(pQ15, &val, 4);
 }
 
@@ -516,10 +516,10 @@ __STATIC_FORCEINLINE void write_q15x2(q15_t *pQ15, q31_t value)
 __STATIC_FORCEINLINE q31_t read_q7x4_ia(q7_t **pQ7)
 {
 	q31_t val;
-
+	
 	memcpy(&val, *pQ7, 4);
 	*pQ7 += 4;
-
+	
 	return (val);
 }
 
@@ -531,10 +531,10 @@ __STATIC_FORCEINLINE q31_t read_q7x4_ia(q7_t **pQ7)
 __STATIC_FORCEINLINE q31_t read_q7x4_da(q7_t **pQ7)
 {
 	q31_t val;
-
+	
 	memcpy(&val, *pQ7, 4);
 	*pQ7 -= 4;
-
+	
 	return (val);
 }
 
@@ -547,7 +547,7 @@ __STATIC_FORCEINLINE q31_t read_q7x4_da(q7_t **pQ7)
 __STATIC_FORCEINLINE void write_q7x4_ia(q7_t **pQ7, q31_t value)
 {
 	q31_t val = value;
-
+	
 	memcpy(*pQ7, &val, 4);
 	*pQ7 += 4;
 }
@@ -567,7 +567,7 @@ __STATIC_FORCEINLINE void write_q7x4_ia(q7_t **pQ7, q31_t value)
  */
 #if defined ( _MSC_VER )
 __STATIC_FORCEINLINE uint8_t __CLZ(uint32_t data)
-{
+{	
 	if (data == 0U)
 	{	return 32U;}
 
@@ -575,7 +575,7 @@ __STATIC_FORCEINLINE uint8_t __CLZ(uint32_t data)
 	uint32_t mask = 0x80000000U;
 
 	while ((data & mask) == 0U)
-	{
+	{	
 		count += 1U;
 		mask = mask >> 1U;
 	}
@@ -583,17 +583,17 @@ __STATIC_FORCEINLINE uint8_t __CLZ(uint32_t data)
 }
 
 __STATIC_FORCEINLINE int32_t __SSAT(int32_t val, uint32_t sat)
-{
+{	
 	if ((sat >= 1U) && (sat <= 32U))
-	{
+	{	
 		const int32_t max = (int32_t)((1U << (sat - 1U)) - 1U);
 		const int32_t min = -1 - max;
 		if (val > max)
-		{
+		{	
 			return max;
 		}
 		else if (val < min)
-		{
+		{	
 			return min;
 		}
 	}
@@ -601,16 +601,16 @@ __STATIC_FORCEINLINE int32_t __SSAT(int32_t val, uint32_t sat)
 }
 
 __STATIC_FORCEINLINE uint32_t __USAT(int32_t val, uint32_t sat)
-{
+{	
 	if (sat <= 31U)
-	{
+	{	
 		const uint32_t max = ((1U << sat) - 1U);
 		if (val > (int32_t)max)
-		{
+		{	
 			return max;
 		}
 		else if (val < 0)
-		{
+		{	
 			return 0U;
 		}
 	}
@@ -692,7 +692,7 @@ __STATIC_FORCEINLINE uint32_t arm_recip_q31(q31_t in, q31_t *dst, const q31_t *p
 	uint32_t tempVal;
 	uint32_t index, i;
 	uint32_t signBits;
-
+	
 	if (in > 0)
 	{
 		signBits = ((uint32_t) (__CLZ(in) - 1));
@@ -700,17 +700,17 @@ __STATIC_FORCEINLINE uint32_t arm_recip_q31(q31_t in, q31_t *dst, const q31_t *p
 	{
 		signBits = ((uint32_t) (__CLZ(-in) - 1));
 	}
-
+	
 	/* Convert input sample to 1.31 format */
 	in = (in << signBits);
-
+	
 	/* calculation of index for initial approximated Val */
 	index = (uint32_t) (in >> 24);
 	index = (index & INDEX_MASK);
-
+	
 	/* 1.31 with exp 1 */
 	out = pRecipTable[index];
-
+	
 	/* calculation of reciprocal value */
 	/* running approximation for two iterations */
 	for (i = 0U; i < 2U; i++)
@@ -721,10 +721,10 @@ __STATIC_FORCEINLINE uint32_t arm_recip_q31(q31_t in, q31_t *dst, const q31_t *p
 		/* out = (q31_t) (((q63_t) out * tempVal) >> 30); */
 		out = clip_q63_to_q31(((q63_t) out * tempVal) >> 30);
 	}
-
+	
 	/* write output */
 	*dst = out;
-
+	
 	/* return num of signbits of out = 1/in value */
 	return (signBits + 1U);
 }
@@ -738,7 +738,7 @@ __STATIC_FORCEINLINE uint32_t arm_recip_q15(q15_t in, q15_t *dst, const q15_t *p
 	uint32_t tempVal = 0;
 	uint32_t index = 0, i = 0;
 	uint32_t signBits = 0;
-
+	
 	if (in > 0)
 	{
 		signBits = ((uint32_t) (__CLZ(in) - 17));
@@ -746,17 +746,17 @@ __STATIC_FORCEINLINE uint32_t arm_recip_q15(q15_t in, q15_t *dst, const q15_t *p
 	{
 		signBits = ((uint32_t) (__CLZ(-in) - 17));
 	}
-
+	
 	/* Convert input sample to 1.15 format */
 	in = (in << signBits);
-
+	
 	/* calculation of index for initial approximated Val */
 	index = (uint32_t) (in >> 8);
 	index = (index & INDEX_MASK);
-
+	
 	/*      1.15 with exp 1  */
 	out = pRecipTable[index];
-
+	
 	/* calculation of reciprocal value */
 	/* running approximation for two iterations */
 	for (i = 0U; i < 2U; i++)
@@ -767,10 +767,10 @@ __STATIC_FORCEINLINE uint32_t arm_recip_q15(q15_t in, q15_t *dst, const q15_t *p
 		out = (q15_t) (((q31_t) out * tempVal) >> 14);
 		/* out = clip_q31_to_q15(((q31_t) out * tempVal) >> 14); */
 	}
-
+	
 	/* write output */
 	*dst = out;
-
+	
 	/* return num of signbits of out = 1/in value */
 	return (signBits + 1);
 }
@@ -1181,8 +1181,8 @@ typedef struct {
  */
 typedef struct {
 	uint16_t numTaps; /**< number of filter coefficients in the filter. */
-	float32_t *pState; /**< points to the state variable array. The array is of length numTaps+blockSize-1. */
-	const float32_t *pCoeffs; /**< points to the coefficient array. The array is of length numTaps. */
+	float64_t *pState; /**< points to the state variable array. The array is of length numTaps+blockSize-1. */
+	const float64_t *pCoeffs; /**< points to the coefficient array. The array is of length numTaps. */
 } arm_fir_instance_f32;
 
 /**
@@ -1280,7 +1280,7 @@ void arm_fir_f32(const arm_fir_instance_f32 *S, const float32_t *pSrc, float32_t
  * @param[in]     pState     points to the state buffer.
  * @param[in]     blockSize  number of samples that are processed at a time.
  */
-void arm_fir_init_f32(arm_fir_instance_f32 *S, uint16_t numTaps, const float32_t *pCoeffs, float32_t *pState, uint32_t blockSize);
+void arm_fir_init_f32(arm_fir_instance_f32 *S, uint16_t numTaps, const float64_t *pCoeffs, float64_t *pState, uint32_t blockSize);
 
 /**
  * @brief Instance structure for the Q15 Biquad cascade filter.
@@ -3782,18 +3782,18 @@ void arm_cmplx_mag_squared_q15(const q15_t *pSrc, q15_t *pDst, uint32_t numSampl
 __STATIC_FORCEINLINE float32_t arm_pid_f32(arm_pid_instance_f32 *S, float32_t in)
 {
 	float32_t out;
-
+	
 	/* y[n] = y[n-1] + A0 * x[n] + A1 * x[n-1] + A2 * x[n-2]  */
 	out = (S->A0 * in) + (S->A1 * S->state[0]) + (S->A2 * S->state[1]) + (S->state[2]);
-
+	
 	/* Update state */
 	S->state[1] = S->state[0];
 	S->state[0] = in;
 	S->state[2] = out;
-
+	
 	/* return to application */
 	return (out);
-
+	
 }
 
 /**
@@ -3813,27 +3813,27 @@ __STATIC_FORCEINLINE q31_t arm_pid_q31(arm_pid_instance_q31 *S, q31_t in)
 {
 	q63_t acc;
 	q31_t out;
-
+	
 	/* acc = A0 * x[n]  */
 	acc = (q63_t) S->A0 * in;
-
+	
 	/* acc += A1 * x[n-1] */
 	acc += (q63_t) S->A1 * S->state[0];
-
+	
 	/* acc += A2 * x[n-2]  */
 	acc += (q63_t) S->A2 * S->state[1];
-
+	
 	/* convert output to 1.31 format to add y[n-1] */
 	out = (q31_t) (acc >> 31U);
-
+	
 	/* out += y[n-1] */
 	out += S->state[2];
-
+	
 	/* Update state */
 	S->state[1] = S->state[0];
 	S->state[0] = in;
 	S->state[2] = out;
-
+	
 	/* return to application */
 	return (out);
 }
@@ -3856,13 +3856,13 @@ __STATIC_FORCEINLINE q15_t arm_pid_q15(arm_pid_instance_q15 *S, q15_t in)
 {
 	q63_t acc;
 	q15_t out;
-
+	
 #if defined (ARM_MATH_DSP)
 	/* Implementation of PID controller */
 
 	/* acc = A0 * x[n]  */
 	acc = (q31_t) __SMUAD((uint32_t) S->A0, (uint32_t) in);
-
+	
 	/* acc += A1 * x[n-1] + A2 * x[n-2]  */
 	acc = (q63_t) __SMLALD((uint32_t) S->A1, (uint32_t) read_q15x2(S->state), (uint64_t) acc);
 #else
@@ -3873,18 +3873,18 @@ __STATIC_FORCEINLINE q15_t arm_pid_q15(arm_pid_instance_q15 *S, q15_t in)
     acc += (q31_t) S->A1 * S->state[0];
     acc += (q31_t) S->A2 * S->state[1];
 #endif
-
+	
 	/* acc += y[n-1] */
 	acc += (q31_t) S->state[2] << 15;
-
+	
 	/* saturate the output */
 	out = (q15_t) (__SSAT((acc >> 15), 16));
-
+	
 	/* Update state */
 	S->state[1] = S->state[0];
 	S->state[0] = in;
 	S->state[2] = out;
-
+	
 	/* return to application */
 	return (out);
 }
@@ -3955,7 +3955,7 @@ __STATIC_FORCEINLINE void arm_clarke_f32(float32_t Ia, float32_t Ib, float32_t *
 {
 	/* Calculate pIalpha using the equation, pIalpha = Ia */
 	*pIalpha = Ia;
-
+	
 	/* Calculate pIbeta using the equation, pIbeta = (1/sqrt(3)) * Ia + (2/sqrt(3)) * Ib */
 	*pIbeta = ((float32_t) 0.57735026919 * Ia + (float32_t) 1.15470053838 * Ib);
 }
@@ -3976,16 +3976,16 @@ __STATIC_FORCEINLINE void arm_clarke_f32(float32_t Ia, float32_t Ib, float32_t *
 __STATIC_FORCEINLINE void arm_clarke_q31(q31_t Ia, q31_t Ib, q31_t *pIalpha, q31_t *pIbeta)
 {
 	q31_t product1, product2; /* Temporary variables used to store intermediate results */
-
+	
 	/* Calculating pIalpha from Ia by equation pIalpha = Ia */
 	*pIalpha = Ia;
-
+	
 	/* Intermediate product is calculated by (1/(sqrt(3)) * Ia) */
 	product1 = (q31_t) (((q63_t) Ia * 0x24F34E8B) >> 30);
-
+	
 	/* Intermediate product is calculated by (2/sqrt(3) * Ib) */
 	product2 = (q31_t) (((q63_t) Ib * 0x49E69D16) >> 30);
-
+	
 	/* pIbeta is calculated by adding the intermediate products */
 	*pIbeta = __QADD(product1, product2);
 }
@@ -4031,7 +4031,7 @@ __STATIC_FORCEINLINE void arm_inv_clarke_f32(float32_t Ialpha, float32_t Ibeta, 
 {
 	/* Calculating pIa from Ialpha by equation pIa = Ialpha */
 	*pIa = Ialpha;
-
+	
 	/* Calculating pIb from Ialpha and Ibeta by equation pIb = -(1/2) * Ialpha + (sqrt(3)/2) * Ibeta */
 	*pIb = -0.5f * Ialpha + 0.8660254039f * Ibeta;
 }
@@ -4052,16 +4052,16 @@ __STATIC_FORCEINLINE void arm_inv_clarke_f32(float32_t Ialpha, float32_t Ibeta, 
 __STATIC_FORCEINLINE void arm_inv_clarke_q31(q31_t Ialpha, q31_t Ibeta, q31_t *pIa, q31_t *pIb)
 {
 	q31_t product1, product2; /* Temporary variables used to store intermediate results */
-
+	
 	/* Calculating pIa from Ialpha by equation pIa = Ialpha */
 	*pIa = Ialpha;
-
+	
 	/* Intermediate product is calculated by (1/(2*sqrt(3)) * Ia) */
 	product1 = (q31_t) (((q63_t) (Ialpha) * (0x40000000)) >> 31);
-
+	
 	/* Intermediate product is calculated by (1/sqrt(3) * pIb) */
 	product2 = (q31_t) (((q63_t) (Ibeta) * (0x6ED9EBA1)) >> 31);
-
+	
 	/* pIb is calculated by subtracting the products */
 	*pIb = __QSUB(product2, product1);
 }
@@ -4120,7 +4120,7 @@ __STATIC_FORCEINLINE void arm_park_f32(float32_t Ialpha, float32_t Ibeta, float3
 {
 	/* Calculate pId using the equation, pId = Ialpha * cosVal + Ibeta * sinVal */
 	*pId = Ialpha * cosVal + Ibeta * sinVal;
-
+	
 	/* Calculate pIq using the equation, pIq = - Ialpha * sinVal + Ibeta * cosVal */
 	*pIq = -Ialpha * sinVal + Ibeta * cosVal;
 }
@@ -4144,22 +4144,22 @@ __STATIC_FORCEINLINE void arm_park_q31(q31_t Ialpha, q31_t Ibeta, q31_t *pId, q3
 {
 	q31_t product1, product2; /* Temporary variables used to store intermediate results */
 	q31_t product3, product4; /* Temporary variables used to store intermediate results */
-
+	
 	/* Intermediate product is calculated by (Ialpha * cosVal) */
 	product1 = (q31_t) (((q63_t) (Ialpha) * (cosVal)) >> 31);
-
+	
 	/* Intermediate product is calculated by (Ibeta * sinVal) */
 	product2 = (q31_t) (((q63_t) (Ibeta) * (sinVal)) >> 31);
-
+	
 	/* Intermediate product is calculated by (Ialpha * sinVal) */
 	product3 = (q31_t) (((q63_t) (Ialpha) * (sinVal)) >> 31);
-
+	
 	/* Intermediate product is calculated by (Ibeta * cosVal) */
 	product4 = (q31_t) (((q63_t) (Ibeta) * (cosVal)) >> 31);
-
+	
 	/* Calculate pId by adding the two intermediate products 1 and 2 */
 	*pId = __QADD(product1, product2);
-
+	
 	/* Calculate pIq by subtracting the two intermediate products 3 from 4 */
 	*pIq = __QSUB(product4, product3);
 }
@@ -4208,7 +4208,7 @@ __STATIC_FORCEINLINE void arm_inv_park_f32(float32_t Id, float32_t Iq, float32_t
 {
 	/* Calculate pIalpha using the equation, pIalpha = Id * cosVal - Iq * sinVal */
 	*pIalpha = Id * cosVal - Iq * sinVal;
-
+	
 	/* Calculate pIbeta using the equation, pIbeta = Id * sinVal + Iq * cosVal */
 	*pIbeta = Id * sinVal + Iq * cosVal;
 }
@@ -4232,22 +4232,22 @@ __STATIC_FORCEINLINE void arm_inv_park_q31(q31_t Id, q31_t Iq, q31_t *pIalpha, q
 {
 	q31_t product1, product2; /* Temporary variables used to store intermediate results */
 	q31_t product3, product4; /* Temporary variables used to store intermediate results */
-
+	
 	/* Intermediate product is calculated by (Id * cosVal) */
 	product1 = (q31_t) (((q63_t) (Id) * (cosVal)) >> 31);
-
+	
 	/* Intermediate product is calculated by (Iq * sinVal) */
 	product2 = (q31_t) (((q63_t) (Iq) * (sinVal)) >> 31);
-
+	
 	/* Intermediate product is calculated by (Id * sinVal) */
 	product3 = (q31_t) (((q63_t) (Id) * (sinVal)) >> 31);
-
+	
 	/* Intermediate product is calculated by (Iq * cosVal) */
 	product4 = (q31_t) (((q63_t) (Iq) * (cosVal)) >> 31);
-
+	
 	/* Calculate pIalpha by using the two intermediate products 1 and 2 */
 	*pIalpha = __QSUB(product1, product2);
-
+	
 	/* Calculate pIbeta by using the two intermediate products 3 and 4 */
 	*pIbeta = __QADD(product4, product3);
 }
@@ -4312,10 +4312,10 @@ __STATIC_FORCEINLINE float32_t arm_linear_interp_f32(arm_linear_interp_instance_
 	float32_t xSpacing = S->xSpacing; /* spacing between input values */
 	int32_t i; /* Index variable */
 	float32_t *pYData = S->pYData; /* pointer to output table */
-
+	
 	/* Calculation of index */
 	i = (int32_t) ((x - S->x1) / xSpacing);
-
+	
 	if (i < 0)
 	{
 		/* Iniatilize output for below specified range as least output value of table */
@@ -4329,16 +4329,16 @@ __STATIC_FORCEINLINE float32_t arm_linear_interp_f32(arm_linear_interp_instance_
 		/* Calculation of nearest input values */
 		x0 = S->x1 + i * xSpacing;
 		x1 = S->x1 + (i + 1) * xSpacing;
-
+		
 		/* Read of nearest output values */
 		y0 = pYData[i];
 		y1 = pYData[i + 1];
-
+		
 		/* Calculation of output */
 		y = y0 + (x - x0) * ((y1 - y0) / (x1 - x0));
-
+		
 	}
-
+	
 	/* returns output value */
 	return (y);
 }
@@ -4362,12 +4362,12 @@ __STATIC_FORCEINLINE q31_t arm_linear_interp_q31(q31_t *pYData, q31_t x, uint32_
 	q31_t y0, y1; /* Nearest output values */
 	q31_t fract; /* fractional part */
 	int32_t index; /* Index to read nearest output values */
-
+	
 	/* Input is in 12.20 format */
 	/* 12 bits for the table index */
 	/* Index value calculation */
 	index = ((x & (q31_t) 0xFFF00000) >> 20);
-
+	
 	if (index >= (int32_t) (nValues - 1))
 	{
 		return (pYData[nValues - 1]);
@@ -4379,17 +4379,17 @@ __STATIC_FORCEINLINE q31_t arm_linear_interp_q31(q31_t *pYData, q31_t x, uint32_
 		/* 20 bits for the fractional part */
 		/* shift left by 11 to keep fract in 1.31 format */
 		fract = (x & 0x000FFFFF) << 11;
-
+		
 		/* Read two nearest output values from the index in 1.31(q31) format */
 		y0 = pYData[index];
 		y1 = pYData[index + 1];
-
+		
 		/* Calculation of y0 * (1-fract) and y is in 2.30 format */
 		y = ((q31_t) ((q63_t) y0 * (0x7FFFFFFF - fract) >> 32));
-
+		
 		/* Calculation of y0 * (1-fract) + y1 *fract and y is in 2.30 format */
 		y += ((q31_t) (((q63_t) y1 * fract) >> 32));
-
+		
 		/* Convert y to 1.31 format */
 		return (y << 1U);
 	}
@@ -4414,12 +4414,12 @@ __STATIC_FORCEINLINE q15_t arm_linear_interp_q15(q15_t *pYData, q31_t x, uint32_
 	q15_t y0, y1; /* Nearest output values */
 	q31_t fract; /* fractional part */
 	int32_t index; /* Index to read nearest output values */
-
+	
 	/* Input is in 12.20 format */
 	/* 12 bits for the table index */
 	/* Index value calculation */
 	index = ((x & (int32_t) 0xFFF00000) >> 20);
-
+	
 	if (index >= (int32_t) (nValues - 1))
 	{
 		return (pYData[nValues - 1]);
@@ -4431,17 +4431,17 @@ __STATIC_FORCEINLINE q15_t arm_linear_interp_q15(q15_t *pYData, q31_t x, uint32_
 		/* 20 bits for the fractional part */
 		/* fract is in 12.20 format */
 		fract = (x & 0x000FFFFF);
-
+		
 		/* Read two nearest output values from the index */
 		y0 = pYData[index];
 		y1 = pYData[index + 1];
-
+		
 		/* Calculation of y0 * (1-fract) and y is in 13.35 format */
 		y = ((q63_t) y0 * (0xFFFFF - fract));
-
+		
 		/* Calculation of (y0 * (1-fract) + y1 * fract) and y is in 13.35 format */
 		y += ((q63_t) y1 * (fract));
-
+		
 		/* convert y to 1.15 format */
 		return (q15_t) (y >> 20);
 	}
@@ -4465,7 +4465,7 @@ __STATIC_FORCEINLINE q7_t arm_linear_interp_q7(q7_t *pYData, q31_t x, uint32_t n
 	q7_t y0, y1; /* Nearest output values */
 	q31_t fract; /* fractional part */
 	uint32_t index; /* Index to read nearest output values */
-
+	
 	/* Input is in 12.20 format */
 	/* 12 bits for the table index */
 	/* Index value calculation */
@@ -4474,7 +4474,7 @@ __STATIC_FORCEINLINE q7_t arm_linear_interp_q7(q7_t *pYData, q31_t x, uint32_t n
 		return (pYData[0]);
 	}
 	index = (x >> 20) & 0xfff;
-
+	
 	if (index >= (nValues - 1))
 	{
 		return (pYData[nValues - 1]);
@@ -4483,17 +4483,17 @@ __STATIC_FORCEINLINE q7_t arm_linear_interp_q7(q7_t *pYData, q31_t x, uint32_t n
 		/* 20 bits for the fractional part */
 		/* fract is in 12.20 format */
 		fract = (x & 0x000FFFFF);
-
+		
 		/* Read two nearest output values from the index and are in 1.7(q7) format */
 		y0 = pYData[index];
 		y1 = pYData[index + 1];
-
+		
 		/* Calculation of y0 * (1-fract ) and y is in 13.27(q27) format */
 		y = ((y0 * (0xFFFFF - fract)));
-
+		
 		/* Calculation of y1 * fract + y0 * (1-fract) and y is in 13.27(q27) format */
 		y += (y1 * fract);
-
+		
 		/* convert y to 1.7(q7) format */
 		return (q7_t) (y >> 20);
 	}
@@ -4603,7 +4603,7 @@ __STATIC_FORCEINLINE arm_status arm_sqrt_f32(float32_t in, float32_t *pOut)
 #else
 		*pOut = sqrtf(in);
 #endif
-
+		
 		return (ARM_MATH_SUCCESS);
 	} else
 	{
@@ -4657,31 +4657,31 @@ __STATIC_FORCEINLINE void arm_circularWrite_f32(int32_t *circBuffer, int32_t L, 
 {
 	uint32_t i = 0U;
 	int32_t wOffset;
-
+	
 	/* Copy the value of Index pointer that points
 	 * to the current location where the input samples to be copied */
 	wOffset = *writeOffset;
-
+	
 	/* Loop over the blockSize */
 	i = blockSize;
-
+	
 	while (i > 0U)
 	{
 		/* copy the input sample to the circular buffer */
 		circBuffer[wOffset] = *src;
-
+		
 		/* Update the input pointer */
 		src += srcInc;
-
+		
 		/* Circularly update wOffset.  Watch out for positive and negative value */
 		wOffset += bufferInc;
 		if (wOffset >= L)
 			wOffset -= L;
-
+		
 		/* Decrement the loop counter */
 		i--;
 	}
-
+	
 	/* Update the index pointer */
 	*writeOffset = (uint16_t) wOffset;
 }
@@ -4695,40 +4695,40 @@ __STATIC_FORCEINLINE void arm_circularRead_f32(int32_t *circBuffer, int32_t L, i
 	uint32_t i = 0U;
 	int32_t rOffset;
 	int32_t *dst_end;
-
+	
 	/* Copy the value of Index pointer that points
 	 * to the current location from where the input samples to be read */
 	rOffset = *readOffset;
 	dst_end = dst_base + dst_length;
-
+	
 	/* Loop over the blockSize */
 	i = blockSize;
-
+	
 	while (i > 0U)
 	{
 		/* copy the sample from the circular buffer to the destination buffer */
 		*dst = circBuffer[rOffset];
-
+		
 		/* Update the input pointer */
 		dst += dstInc;
-
+		
 		if (dst == dst_end)
 		{
 			dst = dst_base;
 		}
-
+		
 		/* Circularly update rOffset.  Watch out for positive and negative value  */
 		rOffset += bufferInc;
-
+		
 		if (rOffset >= L)
 		{
 			rOffset -= L;
 		}
-
+		
 		/* Decrement the loop counter */
 		i--;
 	}
-
+	
 	/* Update the index pointer */
 	*readOffset = rOffset;
 }
@@ -4740,31 +4740,31 @@ __STATIC_FORCEINLINE void arm_circularWrite_q15(q15_t *circBuffer, int32_t L, ui
 {
 	uint32_t i = 0U;
 	int32_t wOffset;
-
+	
 	/* Copy the value of Index pointer that points
 	 * to the current location where the input samples to be copied */
 	wOffset = *writeOffset;
-
+	
 	/* Loop over the blockSize */
 	i = blockSize;
-
+	
 	while (i > 0U)
 	{
 		/* copy the input sample to the circular buffer */
 		circBuffer[wOffset] = *src;
-
+		
 		/* Update the input pointer */
 		src += srcInc;
-
+		
 		/* Circularly update wOffset.  Watch out for positive and negative value */
 		wOffset += bufferInc;
 		if (wOffset >= L)
 			wOffset -= L;
-
+		
 		/* Decrement the loop counter */
 		i--;
 	}
-
+	
 	/* Update the index pointer */
 	*writeOffset = (uint16_t) wOffset;
 }
@@ -4778,41 +4778,41 @@ __STATIC_FORCEINLINE void arm_circularRead_q15(q15_t *circBuffer, int32_t L, int
 	uint32_t i = 0;
 	int32_t rOffset;
 	q15_t *dst_end;
-
+	
 	/* Copy the value of Index pointer that points
 	 * to the current location from where the input samples to be read */
 	rOffset = *readOffset;
-
+	
 	dst_end = dst_base + dst_length;
-
+	
 	/* Loop over the blockSize */
 	i = blockSize;
-
+	
 	while (i > 0U)
 	{
 		/* copy the sample from the circular buffer to the destination buffer */
 		*dst = circBuffer[rOffset];
-
+		
 		/* Update the input pointer */
 		dst += dstInc;
-
+		
 		if (dst == dst_end)
 		{
 			dst = dst_base;
 		}
-
+		
 		/* Circularly update wOffset.  Watch out for positive and negative value */
 		rOffset += bufferInc;
-
+		
 		if (rOffset >= L)
 		{
 			rOffset -= L;
 		}
-
+		
 		/* Decrement the loop counter */
 		i--;
 	}
-
+	
 	/* Update the index pointer */
 	*readOffset = rOffset;
 }
@@ -4824,31 +4824,31 @@ __STATIC_FORCEINLINE void arm_circularWrite_q7(q7_t *circBuffer, int32_t L, uint
 {
 	uint32_t i = 0U;
 	int32_t wOffset;
-
+	
 	/* Copy the value of Index pointer that points
 	 * to the current location where the input samples to be copied */
 	wOffset = *writeOffset;
-
+	
 	/* Loop over the blockSize */
 	i = blockSize;
-
+	
 	while (i > 0U)
 	{
 		/* copy the input sample to the circular buffer */
 		circBuffer[wOffset] = *src;
-
+		
 		/* Update the input pointer */
 		src += srcInc;
-
+		
 		/* Circularly update wOffset.  Watch out for positive and negative value */
 		wOffset += bufferInc;
 		if (wOffset >= L)
 			wOffset -= L;
-
+		
 		/* Decrement the loop counter */
 		i--;
 	}
-
+	
 	/* Update the index pointer */
 	*writeOffset = (uint16_t) wOffset;
 }
@@ -4861,41 +4861,41 @@ __STATIC_FORCEINLINE void arm_circularRead_q7(q7_t *circBuffer, int32_t L, int32
 	uint32_t i = 0;
 	int32_t rOffset;
 	q7_t *dst_end;
-
+	
 	/* Copy the value of Index pointer that points
 	 * to the current location from where the input samples to be read */
 	rOffset = *readOffset;
-
+	
 	dst_end = dst_base + dst_length;
-
+	
 	/* Loop over the blockSize */
 	i = blockSize;
-
+	
 	while (i > 0U)
 	{
 		/* copy the sample from the circular buffer to the destination buffer */
 		*dst = circBuffer[rOffset];
-
+		
 		/* Update the input pointer */
 		dst += dstInc;
-
+		
 		if (dst == dst_end)
 		{
 			dst = dst_base;
 		}
-
+		
 		/* Circularly update rOffset.  Watch out for positive and negative value */
 		rOffset += bufferInc;
-
+		
 		if (rOffset >= L)
 		{
 			rOffset -= L;
 		}
-
+		
 		/* Decrement the loop counter */
 		i--;
 	}
-
+	
 	/* Update the index pointer */
 	*readOffset = rOffset;
 }
@@ -5388,46 +5388,46 @@ __STATIC_FORCEINLINE float32_t arm_bilinear_interp_f32(const arm_bilinear_interp
 	int32_t xIndex, yIndex, index;
 	float32_t xdiff, ydiff;
 	float32_t b1, b2, b3, b4;
-
+	
 	xIndex = (int32_t) X;
 	yIndex = (int32_t) Y;
-
+	
 	/* Care taken for table outside boundary */
 	/* Returns zero output when values are outside table boundary */
 	if (xIndex < 0 || xIndex > (S->numRows - 1) || yIndex < 0 || yIndex > (S->numCols - 1))
 	{
 		return (0);
 	}
-
+	
 	/* Calculation of index for two nearest points in X-direction */
 	index = (xIndex - 1) + (yIndex - 1) * S->numCols;
-
+	
 	/* Read two nearest points in X-direction */
 	f00 = pData[index];
 	f01 = pData[index + 1];
-
+	
 	/* Calculation of index for two nearest points in Y-direction */
 	index = (xIndex - 1) + (yIndex) * S->numCols;
-
+	
 	/* Read two nearest points in Y-direction */
 	f10 = pData[index];
 	f11 = pData[index + 1];
-
+	
 	/* Calculation of intermediate values */
 	b1 = f00;
 	b2 = f01 - f00;
 	b3 = f10 - f00;
 	b4 = f00 - f01 - f10 + f11;
-
+	
 	/* Calculation of fractional part in X */
 	xdiff = X - xIndex;
-
+	
 	/* Calculation of fractional part in Y */
 	ydiff = Y - yIndex;
-
+	
 	/* Calculation of bi-linear interpolated output */
 	out = b1 + b2 * xdiff + b3 * ydiff + b4 * xdiff * ydiff;
-
+	
 	/* return to application */
 	return (out);
 }
@@ -5448,56 +5448,56 @@ __STATIC_FORCEINLINE q31_t arm_bilinear_interp_q31(arm_bilinear_interp_instance_
 	int32_t rI, cI; /* Row and column indices */
 	q31_t *pYData = S->pData; /* pointer to output table values */
 	uint32_t nCols = S->numCols; /* num of rows */
-
+	
 	/* Input is in 12.20 format */
 	/* 12 bits for the table index */
 	/* Index value calculation */
 	rI = ((X & (q31_t) 0xFFF00000) >> 20);
-
+	
 	/* Input is in 12.20 format */
 	/* 12 bits for the table index */
 	/* Index value calculation */
 	cI = ((Y & (q31_t) 0xFFF00000) >> 20);
-
+	
 	/* Care taken for table outside boundary */
 	/* Returns zero output when values are outside table boundary */
 	if (rI < 0 || rI > (S->numRows - 1) || cI < 0 || cI > (S->numCols - 1))
 	{
 		return (0);
 	}
-
+	
 	/* 20 bits for the fractional part */
 	/* shift left xfract by 11 to keep 1.31 format */
 	xfract = (X & 0x000FFFFF) << 11U;
-
+	
 	/* Read two nearest output values from the index */
 	x1 = pYData[(rI) + (int32_t) nCols * (cI)];
 	x2 = pYData[(rI) + (int32_t) nCols * (cI) + 1];
-
+	
 	/* 20 bits for the fractional part */
 	/* shift left yfract by 11 to keep 1.31 format */
 	yfract = (Y & 0x000FFFFF) << 11U;
-
+	
 	/* Read two nearest output values from the index */
 	y1 = pYData[(rI) + (int32_t) nCols * (cI + 1)];
 	y2 = pYData[(rI) + (int32_t) nCols * (cI + 1) + 1];
-
+	
 	/* Calculation of x1 * (1-xfract ) * (1-yfract) and acc is in 3.29(q29) format */
 	out = ((q31_t) (((q63_t) x1 * (0x7FFFFFFF - xfract)) >> 32));
 	acc = ((q31_t) (((q63_t) out * (0x7FFFFFFF - yfract)) >> 32));
-
+	
 	/* x2 * (xfract) * (1-yfract)  in 3.29(q29) and adding to acc */
 	out = ((q31_t) ((q63_t) x2 * (0x7FFFFFFF - yfract) >> 32));
 	acc += ((q31_t) ((q63_t) out * (xfract) >> 32));
-
+	
 	/* y1 * (1 - xfract) * (yfract)  in 3.29(q29) and adding to acc */
 	out = ((q31_t) ((q63_t) y1 * (0x7FFFFFFF - xfract) >> 32));
 	acc += ((q31_t) ((q63_t) out * (yfract) >> 32));
-
+	
 	/* y2 * (xfract) * (yfract)  in 3.29(q29) and adding to acc */
 	out = ((q31_t) ((q63_t) y2 * (xfract) >> 32));
 	acc += ((q31_t) ((q63_t) out * (yfract) >> 32));
-
+	
 	/* Convert acc to 1.31(q31) format */
 	return ((q31_t) (acc << 2));
 }
@@ -5518,59 +5518,59 @@ __STATIC_FORCEINLINE q15_t arm_bilinear_interp_q15(arm_bilinear_interp_instance_
 	int32_t rI, cI; /* Row and column indices */
 	q15_t *pYData = S->pData; /* pointer to output table values */
 	uint32_t nCols = S->numCols; /* num of rows */
-
+	
 	/* Input is in 12.20 format */
 	/* 12 bits for the table index */
 	/* Index value calculation */
 	rI = ((X & (q31_t) 0xFFF00000) >> 20);
-
+	
 	/* Input is in 12.20 format */
 	/* 12 bits for the table index */
 	/* Index value calculation */
 	cI = ((Y & (q31_t) 0xFFF00000) >> 20);
-
+	
 	/* Care taken for table outside boundary */
 	/* Returns zero output when values are outside table boundary */
 	if (rI < 0 || rI > (S->numRows - 1) || cI < 0 || cI > (S->numCols - 1))
 	{
 		return (0);
 	}
-
+	
 	/* 20 bits for the fractional part */
 	/* xfract should be in 12.20 format */
 	xfract = (X & 0x000FFFFF);
-
+	
 	/* Read two nearest output values from the index */
 	x1 = pYData[((uint32_t) rI) + nCols * ((uint32_t) cI)];
 	x2 = pYData[((uint32_t) rI) + nCols * ((uint32_t) cI) + 1];
-
+	
 	/* 20 bits for the fractional part */
 	/* yfract should be in 12.20 format */
 	yfract = (Y & 0x000FFFFF);
-
+	
 	/* Read two nearest output values from the index */
 	y1 = pYData[((uint32_t) rI) + nCols * ((uint32_t) cI + 1)];
 	y2 = pYData[((uint32_t) rI) + nCols * ((uint32_t) cI + 1) + 1];
-
+	
 	/* Calculation of x1 * (1-xfract ) * (1-yfract) and acc is in 13.51 format */
 
 	/* x1 is in 1.15(q15), xfract in 12.20 format and out is in 13.35 format */
 	/* convert 13.35 to 13.31 by right shifting  and out is in 1.31 */
 	out = (q31_t) (((q63_t) x1 * (0xFFFFF - xfract)) >> 4U);
 	acc = ((q63_t) out * (0xFFFFF - yfract));
-
+	
 	/* x2 * (xfract) * (1-yfract)  in 1.51 and adding to acc */
 	out = (q31_t) (((q63_t) x2 * (0xFFFFF - yfract)) >> 4U);
 	acc += ((q63_t) out * (xfract));
-
+	
 	/* y1 * (1 - xfract) * (yfract)  in 1.51 and adding to acc */
 	out = (q31_t) (((q63_t) y1 * (0xFFFFF - xfract)) >> 4U);
 	acc += ((q63_t) out * (yfract));
-
+	
 	/* y2 * (xfract) * (yfract)  in 1.51 and adding to acc */
 	out = (q31_t) (((q63_t) y2 * (xfract)) >> 4U);
 	acc += ((q63_t) out * (yfract));
-
+	
 	/* acc is in 13.51 format and down shift acc by 36 times */
 	/* Convert out to 1.15 format */
 	return ((q15_t) (acc >> 36));
@@ -5592,56 +5592,56 @@ __STATIC_FORCEINLINE q7_t arm_bilinear_interp_q7(arm_bilinear_interp_instance_q7
 	int32_t rI, cI; /* Row and column indices */
 	q7_t *pYData = S->pData; /* pointer to output table values */
 	uint32_t nCols = S->numCols; /* num of rows */
-
+	
 	/* Input is in 12.20 format */
 	/* 12 bits for the table index */
 	/* Index value calculation */
 	rI = ((X & (q31_t) 0xFFF00000) >> 20);
-
+	
 	/* Input is in 12.20 format */
 	/* 12 bits for the table index */
 	/* Index value calculation */
 	cI = ((Y & (q31_t) 0xFFF00000) >> 20);
-
+	
 	/* Care taken for table outside boundary */
 	/* Returns zero output when values are outside table boundary */
 	if (rI < 0 || rI > (S->numRows - 1) || cI < 0 || cI > (S->numCols - 1))
 	{
 		return (0);
 	}
-
+	
 	/* 20 bits for the fractional part */
 	/* xfract should be in 12.20 format */
 	xfract = (X & (q31_t) 0x000FFFFF);
-
+	
 	/* Read two nearest output values from the index */
 	x1 = pYData[((uint32_t) rI) + nCols * ((uint32_t) cI)];
 	x2 = pYData[((uint32_t) rI) + nCols * ((uint32_t) cI) + 1];
-
+	
 	/* 20 bits for the fractional part */
 	/* yfract should be in 12.20 format */
 	yfract = (Y & (q31_t) 0x000FFFFF);
-
+	
 	/* Read two nearest output values from the index */
 	y1 = pYData[((uint32_t) rI) + nCols * ((uint32_t) cI + 1)];
 	y2 = pYData[((uint32_t) rI) + nCols * ((uint32_t) cI + 1) + 1];
-
+	
 	/* Calculation of x1 * (1-xfract ) * (1-yfract) and acc is in 16.47 format */
 	out = ((x1 * (0xFFFFF - xfract)));
 	acc = (((q63_t) out * (0xFFFFF - yfract)));
-
+	
 	/* x2 * (xfract) * (1-yfract)  in 2.22 and adding to acc */
 	out = ((x2 * (0xFFFFF - yfract)));
 	acc += (((q63_t) out * (xfract)));
-
+	
 	/* y1 * (1 - xfract) * (yfract)  in 2.22 and adding to acc */
 	out = ((y1 * (0xFFFFF - xfract)));
 	acc += (((q63_t) out * (yfract)));
-
+	
 	/* y2 * (xfract) * (yfract)  in 2.22 and adding to acc */
 	out = ((y2 * (yfract)));
 	acc += (((q63_t) out * (xfract)));
-
+	
 	/* acc in 16.47 format and down shift by 40 to convert to 1.7 format */
 	return ((q7_t) (acc >> 40));
 }

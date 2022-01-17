@@ -15,7 +15,7 @@
 #define ADC_TRIGGER_FROM_TIMER
 #define PCB_VERSION_0_1						//для первой версии платы 
 #define ADC_bits		16U						/* ADC resolution */
-#define ADC_CONVERTED_DATA_BUFFER_SIZE ((uint32_t)  1000)		/* Size of array aADCxConvertedData[] must be 32 bytes aligned ,needed for cache maintenance purpose */
+#define ADC_CONVERTED_DATA_BUFFER_SIZE ((uint32_t)  10000)		/* Size of array aADCxConvertedData[] must be 32 bytes aligned ,needed for cache maintenance purpose */
 
 #if (ADC_bits==8U)
 #define ADC_RANGE                   ((uint32_t)  255) 	/* Max digital value with a full range of 8 bits */
@@ -95,7 +95,7 @@
 #define ADC2_CHANNEL_GPIO_PORT          GPIOF										
 
 #define ADC3_CHANNEL_PIN_CLK_ENABLE()   __HAL_RCC_GPIOC_CLK_ENABLE()
-#define ADC3_CHANNEL_PIN                GPIO_PIN_12 								// ADC3 GPIO pin number */
+#define ADC3_CHANNEL_PIN                GPIO_PIN_3 								// ADC3 GPIO pin number */
 #define ADC3_CHANNEL_GPIO_PORT          GPIOC										
 
 /* Definition for ADCx's Channels */

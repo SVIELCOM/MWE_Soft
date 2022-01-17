@@ -25,7 +25,7 @@ ALIGN_32BYTES(volatile static uint16_t aADC3ConvertedData[ADC_CONVERTED_DATA_BUF
 
 /* Static variables */
 /*коэффициенты фильтра*/
-float32_t FIRfilterCoefficients[FIR_FILTER_NUM_STAGES] = { 0.0072524808347225189208984375, 0.009322776459157466888427734375, 0.01530767977237701416015625, 0.02464949898421764373779296875,
+float64_t FIRfilterCoefficients[FIR_FILTER_NUM_STAGES] = { 0.0072524808347225189208984375, 0.009322776459157466888427734375, 0.01530767977237701416015625, 0.02464949898421764373779296875,
 		0.0364511311054229736328125, 0.04956446588039398193359375, 0.062704540789127349853515625, 0.07457792758941650390625, 0.084012426435947418212890625, 0.0900747776031494140625,
 		0.09216459095478057861328125, 0.0900747776031494140625, 0.084012426435947418212890625, 0.07457792758941650390625, 0.062704540789127349853515625, 0.04956446588039398193359375,
 		0.0364511311054229736328125, 0.02464949898421764373779296875, 0.01530767977237701416015625, 0.009322776459157466888427734375, 0.0072524808347225189208984375 };
@@ -123,13 +123,13 @@ static void DataFiltering(float32_t *pSrc, float32_t *pDst, uint32_t buffer_size
 	 //arm_biquad_casd_df1_inst_f32 IIRfilterInstance; //Структура для работы функции*/
 	//arm_biquad_cascade_df1_init_f32(&IIRfilterInstance, IIR_FILTER_NUM_STAGES, IIRfilterCoefficients, IIRfilter_taps);
 	/*arm_biquad_cascade_df1_f32(&IIRfilterInstance, aADCvoltsData, aIIRfilterConvertedData, ADC_CONVERTED_DATA_BUFFER_SIZE);
-	 */
+	 *********************************************************************/
 
 	/*данные для FIR фильтра*/
 
 	arm_fir_instance_f32 FIRfilterInstance; /*структура для работы функции фильтра*/
 	
-	float32_t FIRfilter_taps[FIR_FILTER_NUM_STAGES + buffer_size - 1];
+	float64_t FIRfilter_taps[FIR_FILTER_NUM_STAGES + buffer_size - 1];
 	
 	/*вызов инициализации фильтров*/
 	arm_fir_init_f32(&FIRfilterInstance, FIR_FILTER_NUM_STAGES, FIRfilterCoefficients, FIRfilter_taps, buffer_size);
@@ -147,13 +147,15 @@ static void DataFiltering(float32_t *pSrc, float32_t *pDst, uint32_t buffer_size
  */
 static float32_t AverageCalc(float32_t *pSrc, uint32_t buffer_size)
 {
-	float32_t average, sum;
-	average = 0.0f; /* переменные для усреднения */
-	sum = 0.0f;
+	float32_t average;
+	float64_t sum, Source;
+	average = 0.0; /* переменные для усреднения */
+	sum = 0.0;
 	
 	for (uint32_t indx = 0; indx < buffer_size; indx++)
 	{
-		sum += pSrc[indx];
+		Source = (float64_t) pSrc[indx];
+		sum += Source;
 	}
 	average = (float32_t) (sum / buffer_size);
 	return average;
@@ -168,11 +170,12 @@ static float32_t AverageCalc(float32_t *pSrc, uint32_t buffer_size)
  */
 static void ADCdata_to_volts(uint32_t ADC_max_value, volatile uint16_t *pSrc, float32_t *pDst, uint32_t size_of_data_array)
 {
-	float32_t VoltADCCoeffitient;
-	VoltADCCoeffitient = 3.3f / ADC_max_value; /* 3.3 - is the Vref in volts */
+	float64_t VoltADCCoeffitient, result;
+	VoltADCCoeffitient = 3.3 / ADC_max_value; /* 3.3 - is the Vref in volts */
 	for (uint32_t indx = 0; indx < size_of_data_array; indx++)
 	{
-		pDst[indx] = (float32_t) pSrc[indx] * VoltADCCoeffitient;
+		result = (pSrc[indx] * VoltADCCoeffitient);
+		pDst[indx] = result;
 	}
 }
 
