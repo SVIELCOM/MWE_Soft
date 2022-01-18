@@ -36,7 +36,7 @@ static void CPU_CACHE_Enable(void);
  */
 int main(void)
 {
-	
+	uint8_t path_switch_togles = 0;
 	/* Enable the CPU Cache */
 	CPU_CACHE_Enable();
 	HAL_Init();
@@ -44,7 +44,7 @@ int main(void)
 	/* Configure the system clock to */
 	SystemClock_Config();
 	PeriphCommonClock_Config();
-	StartADCdataCollection();
+	pathSwitchConfig();
 	
 	/* an example to use the function */
 	weightFormula_t weight_handler; /* create a variable of weightFormula type */
@@ -54,9 +54,16 @@ int main(void)
 	float NuTest = 3.0;
 	float NiTest = 1.65;
 	float NwTest = 3.0;
-	
+	pathSwitchItEnable();
 	while (1)
 	{
+		if (pathSwitchToggled)
+		{
+			pathSwitchItDisable();
+			pathSwitchToggled = 0;
+			path_switch_togles++;
+			StartADCdataCollection();
+		}
 		if (GetAllFreshAnalogChannelsValues(ADC_CONVERTED_DATA_BUFFER_SIZE) == SUCCESS)
 		{
 			weight_handler.coefficientF1 = &F1; /* fill the structure */
@@ -66,7 +73,7 @@ int main(void)
 			weight_handler.motorCurrent = &NiTest;     // AnalogCH2_collected_data;
 			weight_handler.motorSpeed = &NwTest;      //AnalogCH3_collected_data;
 			getSkipWeight(&weight_handler);
-			
+			pathSwitchItEnable();
 		}
 		
 	}
