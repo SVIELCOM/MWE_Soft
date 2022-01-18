@@ -30,4 +30,5 @@ void pathSwitchItDisable(void);
 void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin);     //TODO: выпилить отсюда этот колбэк, куда - пока не решил, либо расширить функционал
 																	 //этой библиотеки для обработки не только прерывания от этажного выключателя, но 
 																	 //и от всех кнопок
+void EXTI15_10_IRQHandler(void);
 #endif /* PATH_SWITCH_H_ */
