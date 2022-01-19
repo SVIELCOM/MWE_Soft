@@ -51,9 +51,9 @@ int main(void)
 	float F1 = 0.0068; /* fill the coefficients */
 	float F2 = 0.000040774719673802242609;
 	float F3 = 0.0;
-	float NuTest = 3.0;
-	float NiTest = 1.65;
-	float NwTest = 3.0;
+	float NuTest = AnalogCH1_collected_data;
+	float NiTest = AnalogCH2_collected_data;
+	float NwTest = AnalogCH3_collected_data;
 	pathSwitchItEnable();
 	while (1)
 	{

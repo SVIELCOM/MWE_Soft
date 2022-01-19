@@ -30,7 +30,7 @@ void pathSwitchItDisable(void)
 	HAL_NVIC_DisableIRQ(PATH_SWITCH_IT_NUMBER);
 }
 
-void EXTI15_10_IRQHandler(void)
+void EXTI4_IRQHandler(void)
 {
 	HAL_GPIO_EXTI_IRQHandler(PATH_SWITCH_PIN);
 }

@@ -174,7 +174,7 @@ static void ADCdata_to_volts(uint32_t ADC_max_value, volatile uint16_t *pSrc, fl
 	VoltADCCoeffitient = 3.3 / ADC_max_value; /* 3.3 - is the Vref in volts */
 	for (uint32_t indx = 0; indx < size_of_data_array; indx++)
 	{
-		result = (pSrc[indx] * VoltADCCoeffitient);
+		result = (pSrc[indx] * VoltADCCoeffitient) - VOLTAGE_OFFSET;
 		pDst[indx] = result;
 	}
 }

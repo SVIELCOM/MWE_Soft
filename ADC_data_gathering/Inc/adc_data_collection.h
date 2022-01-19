@@ -19,6 +19,7 @@
 #define 	ADC_CONVERSION_COMPLETED		0x7
 #define 	SUCCESS						1U
 #define 	UNSUCCESS					0U
+#define  VOLTAGE_OFFSET				1.65d		//смещение относительно 0. (опорное напряжение ОУ) 
 
 /* export variables declaration */
 uint8_t ADC_ConvCplt; 							//* 0,1,3 bit used for ADC1,ADC2,ADC3 conversion complete flag*/
