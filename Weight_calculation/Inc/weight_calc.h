@@ -21,6 +21,7 @@ typedef struct {
 	float *coefficientF1;
 	float *coefficientF2;
 	float *coefficientF3;
+	uint8_t *direction;
 	float result;
 } weightFormula_t;
 

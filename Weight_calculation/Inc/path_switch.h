@@ -22,6 +22,7 @@
 
 /* export variables */
 uint8_t pathSwitchToggled;
+uint8_t pathSwitchPos;
 
 /* functions declaration */
 void pathSwitchConfig(void);

@@ -40,5 +40,6 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
 	if (GPIO_Pin == PATH_SWITCH_PIN)
 	{
 		pathSwitchToggled = 1;
+		pathSwitchPos = HAL_GPIO_ReadPin(PATH_SWITCH_GPIO_PORT, PATH_SWITCH_PIN);
 	}
 }

@@ -48,12 +48,14 @@ int main(void)
 	
 	/* an example to use the function */
 	weightFormula_t weight_handler; /* create a variable of weightFormula type */
-	float F1 = 0.0068; /* fill the coefficients */
-	float F2 = 0.000040774719673802242609;
-	float F3 = 0.0;
-	float NuTest = AnalogCH1_collected_data;
-	float NiTest = AnalogCH2_collected_data;
-	float NwTest = AnalogCH3_collected_data;
+	float F1 = 0.0f; /* fill the coefficients */
+	float F2L = 271.0f;
+	float F2R = 259.0f;
+	float F3L = 0.0f;
+	float F3R = 0.0f;
+	//float NuTest = ;
+	//float NiTest = AnalogCH2_collected_data;
+	//float NwTest = AnalogCH3_collected_data;
 	pathSwitchItEnable();
 	while (1)
 	{
@@ -67,11 +69,20 @@ int main(void)
 		if (GetAllFreshAnalogChannelsValues(ADC_CONVERTED_DATA_BUFFER_SIZE) == SUCCESS)
 		{
 			weight_handler.coefficientF1 = &F1; /* fill the structure */
-			weight_handler.coefficientF2 = &F2;
-			weight_handler.coefficientF3 = &F3;
-			weight_handler.motorVoltage = &NuTest;     // AnalogCH1_collected_data;
-			weight_handler.motorCurrent = &NiTest;     // AnalogCH2_collected_data;
-			weight_handler.motorSpeed = &NwTest;      //AnalogCH3_collected_data;
+			if (pathSwitchPos == GPIO_PIN_SET)
+			{
+				weight_handler.coefficientF2 = &F2L;
+				weight_handler.coefficientF3 = &F3L;
+			} else
+			{
+				weight_handler.coefficientF2 = &F2R;
+				weight_handler.coefficientF3 = &F3R;
+			}
+			
+			weight_handler.direction = &pathSwitchPos;
+			weight_handler.motorVoltage = &AnalogCH1_collected_data;     // AnalogCH1_collected_data;
+			weight_handler.motorCurrent = &AnalogCH2_collected_data;     // AnalogCH2_collected_data;
+			weight_handler.motorSpeed = &AnalogCH3_collected_data;      //AnalogCH3_collected_data;
 			getSkipWeight(&weight_handler);
 			pathSwitchItEnable();
 		}
