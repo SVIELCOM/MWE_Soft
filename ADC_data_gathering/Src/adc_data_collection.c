@@ -19,9 +19,9 @@ static void ADCdata_to_volts(uint32_t ADC_max_value, volatile uint16_t *pSrc, fl
 static float32_t GetAnalogChannelValue(volatile uint16_t *ACDxconvertedData, uint32_t ADC_Range, uint32_t buffer_size);
 
 /* Variable containing ADC conversions data. Aligned 32-bytes,needed for cache maintenance purpose */
-ALIGN_32BYTES(volatile static uint16_t aADC1ConvertedData[ADC_CONVERTED_DATA_BUFFER_SIZE]); /* data from ADC1 */
-ALIGN_32BYTES(volatile static uint16_t aADC2ConvertedData[ADC_CONVERTED_DATA_BUFFER_SIZE]); /* data from ADC2*/
-ALIGN_32BYTES(volatile static uint16_t aADC3ConvertedData[ADC_CONVERTED_DATA_BUFFER_SIZE]); /* data from ADC3*/
+ALIGN_32BYTES(volatile uint16_t aADC1ConvertedData[ADC_CONVERTED_DATA_BUFFER_SIZE]); /* data from ADC1 */
+ALIGN_32BYTES(volatile uint16_t aADC2ConvertedData[ADC_CONVERTED_DATA_BUFFER_SIZE]); /* data from ADC2*/
+ALIGN_32BYTES(volatile uint16_t aADC3ConvertedData[ADC_CONVERTED_DATA_BUFFER_SIZE]); /* data from ADC3*/
 
 /* Static variables */
 /*коэффициенты фильтра*/

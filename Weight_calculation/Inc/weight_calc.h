@@ -15,14 +15,13 @@
 
 /* the structure is needed for easy mapping of input data to data for the mass calculation */
 typedef struct {
-	float *motorSpeed;
-	float *motorCurrent;
-	float *motorVoltage;
+	double *motorSpeed;
+	double *motorCurrent;
+	double *motorVoltage;
 	float *coefficientF1;
 	float *coefficientF2;
 	float *coefficientF3;
-	uint8_t *direction;
-	float result;
+	double result;
 } weightFormula_t;
 
 void getSkipWeight(weightFormula_t *inputStruct);

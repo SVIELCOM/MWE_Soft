@@ -5,6 +5,7 @@
 /* Includes ------------------------------------------------------------------*/
 
 #include "weight_calc.h"
+#include "calc_average_mass.h"
 #include "path_switch.h"
 
 #define WEIGHT_MANUAL_COEFFITIENTS

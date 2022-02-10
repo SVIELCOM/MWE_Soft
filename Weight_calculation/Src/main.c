@@ -53,6 +53,10 @@ int main(void)
 	float F2R = 244.0f;
 	float F3L = 0.0f;
 	float F3R = 0.0f;
+	double massfromaverage, averagemass;
+	extern volatile uint16_t aADC1ConvertedData[ADC_CONVERTED_DATA_BUFFER_SIZE];
+	extern volatile uint16_t aADC2ConvertedData[ADC_CONVERTED_DATA_BUFFER_SIZE];
+	extern volatile uint16_t aADC3ConvertedData[ADC_CONVERTED_DATA_BUFFER_SIZE];
 	//float NuTest = ;
 	//float NiTest = AnalogCH2_collected_data;
 	//float NwTest = AnalogCH3_collected_data;
@@ -80,14 +84,22 @@ int main(void)
 				weight_handler.coefficientF3 = &F3R;
 			}
 			
-			weight_handler.direction = &pathSwitchPos;
-			weight_handler.motorVoltage = &AnalogCH1_collected_data;     // AnalogCH1_collected_data;
-			weight_handler.motorCurrent = &AnalogCH2_collected_data;     // AnalogCH2_collected_data;
-			weight_handler.motorSpeed = &AnalogCH3_collected_data;      //AnalogCH3_collected_data;
+			weight_handler.motorVoltage = (double*) &AnalogCH1_collected_data;     // AnalogCH1_collected_data;
+			weight_handler.motorCurrent = (double*) &AnalogCH2_collected_data;     // AnalogCH2_collected_data;
+			weight_handler.motorSpeed = (double*) &AnalogCH3_collected_data;      //AnalogCH3_collected_data;
 			getSkipWeight(&weight_handler);
+			massfromaverage = weight_handler.result;
+			if (pathSwitchPos == GPIO_PIN_SET)
+			{
+				averagemass = get_average_mass(aADC1ConvertedData, aADC2ConvertedData, aADC3ConvertedData, ADC_RANGE, ADC_CONVERTED_DATA_BUFFER_SIZE, &F1, &F2L, &F3L);
+			} else
+			{
+				averagemass = get_average_mass(aADC1ConvertedData, aADC2ConvertedData, aADC3ConvertedData, ADC_RANGE, ADC_CONVERTED_DATA_BUFFER_SIZE, &F1, &F2R, &F3R);
+			}
 			pathSwitchItEnable();
 		}
-		
+		(void) averagemass;
+		(void) massfromaverage;
 	}
 }
 /**
