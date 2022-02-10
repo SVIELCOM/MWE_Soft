@@ -101,8 +101,12 @@ static float32_t GetAnalogChannelValue(volatile uint16_t *ACDxconvertedData, uin
 	float32_t unfiltered_volts[buffer_size];
 	float32_t filtered_volts[buffer_size];
 	ADCdata_to_volts(ADC_Range, ACDxconvertedData, unfiltered_volts, buffer_size);
+#if defined FIR_FILTER_ENABLED
 	DataFiltering(unfiltered_volts, filtered_volts, buffer_size);
 	return AverageCalc(filtered_volts, buffer_size);
+#else
+	return AverageCalc(unfiltered_volts, buffer_size);
+#endif	
 }
 
 /**

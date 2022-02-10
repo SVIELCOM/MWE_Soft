@@ -6,6 +6,7 @@
  */
 
 #include "weight_calc.h"
+#include <math.h>
 
 /**
  * 
@@ -16,11 +17,7 @@ void getSkipWeight(weightFormula_t *inputStruct)
 	double result, NI, NU, Nw, F1, F2, F3;     //* пока для понимания вкорячивания формулы создал переменные эти */
 	NI = (double) *inputStruct->motorCurrent;
 	NU = (double) *inputStruct->motorVoltage;
-	if (*inputStruct->motorVoltage == GPIO_PIN_SET)
-	{
-		Nw = -(double) *inputStruct->motorSpeed;
-	} else Nw = (double) *inputStruct->motorSpeed;
-	
+	Nw = fabs((double) *inputStruct->motorSpeed);
 	F1 = (double) *inputStruct->coefficientF1;
 	F2 = (double) *inputStruct->coefficientF2;
 	F3 = (double) *inputStruct->coefficientF3;

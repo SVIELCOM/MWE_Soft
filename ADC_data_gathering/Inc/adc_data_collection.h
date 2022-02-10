@@ -13,7 +13,7 @@
 
 #define __FPU_PRESENT 	1
 
-#define	FIR_FILTER_ENABLED
+//#define	FIR_FILTER_ENABLED
 
 #define 	FIR_FILTER_NUM_STAGES	21   		/* количество секций фильтра*/
 #define 	ADC_CONVERSION_COMPLETED		0x7

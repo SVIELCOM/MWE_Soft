@@ -49,8 +49,8 @@ int main(void)
 	/* an example to use the function */
 	weightFormula_t weight_handler; /* create a variable of weightFormula type */
 	float F1 = 0.0f; /* fill the coefficients */
-	float F2L = 271.0f;
-	float F2R = 259.0f;
+	float F2L = 257.0f;
+	float F2R = 244.0f;
 	float F3L = 0.0f;
 	float F3R = 0.0f;
 	//float NuTest = ;
@@ -64,6 +64,7 @@ int main(void)
 			pathSwitchItDisable();
 			pathSwitchToggled = 0;
 			path_switch_togles++;
+			
 			StartADCdataCollection();
 		}
 		if (GetAllFreshAnalogChannelsValues(ADC_CONVERTED_DATA_BUFFER_SIZE) == SUCCESS)
