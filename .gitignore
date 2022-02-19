@@ -7,3 +7,4 @@
 #**/LwIP_HTTP_Server_Netconn_RTOS
 #**/ADC_OverSampler
 **/ADC_DualModeInterleaved
+**/.vscode

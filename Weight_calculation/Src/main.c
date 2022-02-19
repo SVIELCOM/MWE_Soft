@@ -47,19 +47,33 @@ int main(void)
 	pathSwitchConfig();
 	
 	/* an example to use the function */
-	weightFormula_t weight_handler; /* create a variable of weightFormula type */
-	float F1 = 0.0f; /* fill the coefficients */
-	float F2L = 257.0f;
-	float F2R = 244.0f;
-	float F3L = 0.0f;
-	float F3R = 0.0f;
+//	weightFormula_t weight_handler; /* create a variable of weightFormula type */
+	weightFormulaIntInp_t massint_handler;
+	
+	/* коэффициенты для подсчета с использованием int */
+	float F1 = 0.0590953006632f; /* fill the coefficients */
+	float F2L = 0.00206542f;     //42.007494109f;
+	float F2R = 0.00215521f;   	//244.0f;
+	float F3L = 251.0f;
+	float F3R = 657.202f;
+	
+	/* коэффициенты для подсчета с использованием float */
+	float dF1 = 0.0590953006632f; /* fill the coefficients */
+	float dF2L = 41.0120656556887f;
+	float dF2R = 42.7176212461233f;
+	float dF3L = 0.0f;
+	float dF3R = 0.0f;
+	
 	double massfromaverage, averagemass;
 	extern volatile uint16_t aADC1ConvertedData[ADC_CONVERTED_DATA_BUFFER_SIZE];
 	extern volatile uint16_t aADC2ConvertedData[ADC_CONVERTED_DATA_BUFFER_SIZE];
 	extern volatile uint16_t aADC3ConvertedData[ADC_CONVERTED_DATA_BUFFER_SIZE];
-	//float NuTest = ;
-	//float NiTest = AnalogCH2_collected_data;
-	//float NwTest = AnalogCH3_collected_data;
+	int_fast64_t ZeroOffsetMotorVoltage = 32442;
+	int_fast64_t ZeroOffsetMotorCurrent = 32605;
+	int_fast64_t ZeroOffsetMotorSpeed = 32587;
+	
+	// double motorVoltage, motorCurrent, motorSpeed;     //временные переменные пока не разберусь с кастованием указателя float32 в double или выкину функцию
+	//uint16_t fakeADCconvertedData[1] = { 30000 };
 	pathSwitchItEnable();
 	while (1)
 	{
@@ -73,29 +87,56 @@ int main(void)
 		}
 		if (GetAllFreshAnalogChannelsValues(ADC_CONVERTED_DATA_BUFFER_SIZE) == SUCCESS)
 		{
-			weight_handler.coefficientF1 = &F1; /* fill the structure */
+			/*
+			 weight_handler.coefficientF1 = &F1;  fill the structure 
+			 if (pathSwitchPos == GPIO_PIN_SET)
+			 {
+			 weight_handler.coefficientF2 = &F2L;
+			 weight_handler.coefficientF3 = &F3L;
+			 } else
+			 {
+			 weight_handler.coefficientF2 = &F2R;
+			 weight_handler.coefficientF3 = &F3R;
+			 }
+			 
+			 motorVoltage = (double) AnalogCH1_collected_data;
+			 motorCurrent = (double) AnalogCH2_collected_data;
+			 motorSpeed = (double) AnalogCH3_collected_data;
+			 weight_handler.motorVoltage = &motorVoltage;
+			 weight_handler.motorCurrent = &motorCurrent;
+			 weight_handler.motorSpeed = &motorSpeed;
+			 getSkipWeight(&weight_handler);
+			 massfromaverage = weight_handler.result;
+			 */
 			if (pathSwitchPos == GPIO_PIN_SET)
 			{
-				weight_handler.coefficientF2 = &F2L;
-				weight_handler.coefficientF3 = &F3L;
+				
+				averagemass = get_average_mass(aADC1ConvertedData, aADC2ConvertedData, aADC3ConvertedData, ADC_RANGE, ADC_CONVERTED_DATA_BUFFER_SIZE, &dF1, &dF2L, &dF3L, &ZeroOffsetMotorVoltage,
+						&ZeroOffsetMotorCurrent, &ZeroOffsetMotorSpeed);
 			} else
 			{
-				weight_handler.coefficientF2 = &F2R;
-				weight_handler.coefficientF3 = &F3R;
+				
+				averagemass = get_average_mass(aADC1ConvertedData, aADC2ConvertedData, aADC3ConvertedData, ADC_RANGE, ADC_CONVERTED_DATA_BUFFER_SIZE, &dF1, &dF2R, &dF3R, &ZeroOffsetMotorVoltage,
+						&ZeroOffsetMotorCurrent, &ZeroOffsetMotorSpeed);
 			}
-			
-			weight_handler.motorVoltage = (double*) &AnalogCH1_collected_data;     // AnalogCH1_collected_data;
-			weight_handler.motorCurrent = (double*) &AnalogCH2_collected_data;     // AnalogCH2_collected_data;
-			weight_handler.motorSpeed = (double*) &AnalogCH3_collected_data;      //AnalogCH3_collected_data;
-			getSkipWeight(&weight_handler);
-			massfromaverage = weight_handler.result;
 			if (pathSwitchPos == GPIO_PIN_SET)
 			{
-				averagemass = get_average_mass(aADC1ConvertedData, aADC2ConvertedData, aADC3ConvertedData, ADC_RANGE, ADC_CONVERTED_DATA_BUFFER_SIZE, &F1, &F2L, &F3L);
+				massint_handler.coefficientF2 = &F2L;
+				massint_handler.coefficientF3 = &F3L;
 			} else
 			{
-				averagemass = get_average_mass(aADC1ConvertedData, aADC2ConvertedData, aADC3ConvertedData, ADC_RANGE, ADC_CONVERTED_DATA_BUFFER_SIZE, &F1, &F2R, &F3R);
+				massint_handler.coefficientF2 = &F2R;
+				massint_handler.coefficientF3 = &F3R;
 			}
+			massint_handler.coefficientF1 = &F1;
+			massint_handler.motorVoltage = aADC1ConvertedData;
+			massint_handler.motorCurrent = aADC2ConvertedData;
+			massint_handler.motorSpeed = aADC3ConvertedData;
+			massint_handler.intMultiplier = 100000;
+			massint_handler.ZeroOffsetMotorVoltage = &ZeroOffsetMotorVoltage;
+			massint_handler.ZeroOffsetMotorCurrent = &ZeroOffsetMotorCurrent;
+			massint_handler.ZeroOffsetMotorSpeed = &ZeroOffsetMotorSpeed;
+			get_average_mass_int(&massint_handler, ADC_CONVERTED_DATA_BUFFER_SIZE);
 			pathSwitchItEnable();
 		}
 		(void) averagemass;

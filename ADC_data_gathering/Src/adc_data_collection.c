@@ -12,7 +12,9 @@ extern ADC_HandleTypeDef ADC2_Handle; /* ADC2 handle declaration */
 extern ADC_HandleTypeDef ADC3_Handle; /* ADC3 handle declaration */
 extern TIM_HandleTypeDef TimForADC_Handle; /*TIM Handle for triggering ADC extern declaration*/
 /* static Functions*/
+#if defined FIR_FILTER_ENABLED
 static void DataFiltering(float32_t *pSrc, float32_t *pDst, uint32_t buffer_size);
+#endif
 static float32_t AverageCalc(float32_t *AverageVolts, uint32_t buffer_size);
 static float32_t AverageCalc(float32_t *pSrc, uint32_t buffer_size);
 static void ADCdata_to_volts(uint32_t ADC_max_value, volatile uint16_t *pSrc, float32_t *pDst, uint32_t size_of_data_array);
@@ -99,9 +101,9 @@ uint8_t GetAllFreshAnalogChannelsValues(uint32_t buffer_size)
 static float32_t GetAnalogChannelValue(volatile uint16_t *ACDxconvertedData, uint32_t ADC_Range, uint32_t buffer_size)
 {
 	float32_t unfiltered_volts[buffer_size];
-	float32_t filtered_volts[buffer_size];
 	ADCdata_to_volts(ADC_Range, ACDxconvertedData, unfiltered_volts, buffer_size);
 #if defined FIR_FILTER_ENABLED
+	float32_t filtered_volts[buffer_size];
 	DataFiltering(unfiltered_volts, filtered_volts, buffer_size);
 	return AverageCalc(filtered_volts, buffer_size);
 #else
@@ -109,6 +111,7 @@ static float32_t GetAnalogChannelValue(volatile uint16_t *ACDxconvertedData, uin
 #endif	
 }
 
+#if defined FIR_FILTER_ENABLED
 /**
  * Функция фильтрации входных данных 
  * @param pSrc указатель на входной массив
@@ -142,6 +145,7 @@ static void DataFiltering(float32_t *pSrc, float32_t *pDst, uint32_t buffer_size
 
 	arm_fir_f32(&FIRfilterInstance, pSrc, pDst, buffer_size);
 }
+#endif
 
 /**
  * 

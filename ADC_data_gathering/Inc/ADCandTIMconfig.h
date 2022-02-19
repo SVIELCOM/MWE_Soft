@@ -19,14 +19,19 @@
 
 #if (ADC_bits==8U)
 #define ADC_RANGE                   ((uint32_t)  255) 	/* Max digital value with a full range of 8 bits */
+#define ADC_ZERO_OFFSET					((uint32_t)127)    /* Offset for zeroing ADC input*/
 #elif (ADC_bits==10U)
 #define ADC_RANGE                   ((uint32_t) 1023)    /* Max digital value with a full range of 12 bits */
+#define ADC_ZERO_OFFSET					((uint32_t)511)    /* Offset for zeroing ADC input*/
 #elif (ADC_bits==12U)
 #define ADC_RANGE                   ((uint32_t) 4095)    /* Max digital value with a full range of 12 bits */
+#define ADC_ZERO_OFFSET					((uint32_t)2047)    /* Offset for zeroing ADC input*/
 #elif (ADC_bits==14U)
 #define ADC_RANGE                   ((uint32_t)16383)    /* Max digital value with a full range of 14 bits */
+#define ADC_ZERO_OFFSET					((uint32_t)8191)    /* Offset for zeroing ADC input*/
 #else
 #define ADC_RANGE                   ((uint32_t)65535)    /* Max digital value with a full range of 16 bits */
+#define ADC_ZERO_OFFSET					((uint32_t)32767)    /* Offset for zeroing ADC input*/
 #endif 																	/* ADC_bits */
 
 /*Common ADC settins*/
