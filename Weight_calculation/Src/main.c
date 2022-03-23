@@ -65,15 +65,14 @@ int main(void)
 	float dF3R = 0.0f;
 	
 	double massfromaverage, averagemass;
+	
 	extern volatile uint16_t aADC1ConvertedData[ADC_CONVERTED_DATA_BUFFER_SIZE];
 	extern volatile uint16_t aADC2ConvertedData[ADC_CONVERTED_DATA_BUFFER_SIZE];
 	extern volatile uint16_t aADC3ConvertedData[ADC_CONVERTED_DATA_BUFFER_SIZE];
-	int_fast64_t ZeroOffsetMotorVoltage = 32442;
-	int_fast64_t ZeroOffsetMotorCurrent = 32605;
-	int_fast64_t ZeroOffsetMotorSpeed = 32587;
+	int_fast64_t ZeroOffsetMotorVoltage = 32442; /* ADC offset for motor voltage channel */
+	int_fast64_t ZeroOffsetMotorCurrent = 32605; /* ADC offset for motor current channel */
+	int_fast64_t ZeroOffsetMotorSpeed = 32587; /* ADC offset for motor speed channel */
 	
-	// double motorVoltage, motorCurrent, motorSpeed;     //временные переменные пока не разберусь с кастованием указателя float32 в double или выкину функцию
-	//uint16_t fakeADCconvertedData[1] = { 30000 };
 	pathSwitchItEnable();
 	while (1)
 	{
@@ -108,7 +107,7 @@ int main(void)
 			 getSkipWeight(&weight_handler);
 			 massfromaverage = weight_handler.result;
 			 */
-			if (pathSwitchPos == GPIO_PIN_SET)
+			if (pathSwitchPos == GPIO_PIN_SET) /* вариант подсчета с использованием чисел с плавающей точкой */
 			{
 				
 				averagemass = get_average_mass(aADC1ConvertedData, aADC2ConvertedData, aADC3ConvertedData, ADC_RANGE, ADC_CONVERTED_DATA_BUFFER_SIZE, &dF1, &dF2L, &dF3L, &ZeroOffsetMotorVoltage,

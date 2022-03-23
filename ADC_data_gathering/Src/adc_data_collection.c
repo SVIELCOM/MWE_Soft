@@ -176,6 +176,7 @@ static float32_t AverageCalc(float32_t *pSrc, uint32_t buffer_size)
  * @param pDst					-		pointer to destination buffer
  * @param size_of_data_array	-	buffers size
  */
+
 static void ADCdata_to_volts(uint32_t ADC_max_value, volatile uint16_t *pSrc, float32_t *pDst, uint32_t size_of_data_array)
 {
 	float64_t VoltADCCoeffitient, result;

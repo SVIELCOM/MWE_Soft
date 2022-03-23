@@ -9,17 +9,17 @@
 #define ADC_DATA_COLLECTION_H_
 
 #include "ADCandTIMconfig.h"
-#include "arm_math.h" 							/* would'n work without this*/
+#include "arm_math.h" 												/* would'n work without this*/
 
-#define __FPU_PRESENT 	1
+#define __FPU_PRESENT 						1						/* must be there for fpu-based instructions  */
 
-//#define	FIR_FILTER_ENABLED
+//#define	FIR_FILTER_ENABLED  									/* enable or disable FIR filter */
 
-#define 	FIR_FILTER_NUM_STAGES	21   		/* количество секций фильтра*/
+#define 	FIR_FILTER_NUM_STAGES			21   					/* количество секций фильтра*/
 #define 	ADC_CONVERSION_COMPLETED		0x7
-#define 	SUCCESS						1U
-#define 	UNSUCCESS					0U
-#define  VOLTAGE_OFFSET				1.65d		//смещение относительно 0. (опорное напряжение ОУ) 
+#define 	SUCCESS								1U		
+#define 	UNSUCCESS							0U
+#define  VOLTAGE_OFFSET						1.65d					//общее смещение относительно 0. (опорное напряжение ОУ) в продакшене испол
 
 /* export variables declaration */
 uint8_t ADC_ConvCplt; 							//* 0,1,3 bit used for ADC1,ADC2,ADC3 conversion complete flag*/
