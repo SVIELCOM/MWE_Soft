@@ -15,6 +15,7 @@ extern TIM_HandleTypeDef TimForADC_Handle; /*TIM Handle for triggering ADC exter
 #if defined FIR_FILTER_ENABLED
 static void DataFiltering(float32_t *pSrc, float32_t *pDst, uint32_t buffer_size);
 #endif
+
 static float32_t AverageCalc(float32_t *AverageVolts, uint32_t buffer_size);
 static float32_t AverageCalc(float32_t *pSrc, uint32_t buffer_size);
 static void ADCdata_to_volts(uint32_t ADC_max_value, volatile uint16_t *pSrc, float32_t *pDst, uint32_t size_of_data_array);
@@ -118,7 +119,7 @@ static float32_t GetAnalogChannelValue(volatile uint16_t *ACDxconvertedData, uin
  * @param pDst	указатель на массив выходных данных
  */
 static void DataFiltering(float32_t *pSrc, float32_t *pDst, uint32_t buffer_size)
-{
+{	
 	/****************** Останки от реализации фильтра IIR *************/
 	/*настройка фильтра хорошо описана тут https://schaumont.dyn.wpi.edu/ece4703b21/lecture7.html#:~:text=considerable%20performance%20improvement.-,IIR%20Designs%20using%20ARM%20CMSIS%20DSP,-Just%20as%20with*/
 
@@ -135,12 +136,12 @@ static void DataFiltering(float32_t *pSrc, float32_t *pDst, uint32_t buffer_size
 	/*данные для FIR фильтра*/
 
 	arm_fir_instance_f32 FIRfilterInstance; /*структура для работы функции фильтра*/
-	
+
 	float64_t FIRfilter_taps[FIR_FILTER_NUM_STAGES + buffer_size - 1];
-	
+
 	/*вызов инициализации фильтров*/
 	arm_fir_init_f32(&FIRfilterInstance, FIR_FILTER_NUM_STAGES, FIRfilterCoefficients, FIRfilter_taps, buffer_size);
-	
+
 	/* закидывавем массив в фильтры*/
 
 	arm_fir_f32(&FIRfilterInstance, pSrc, pDst, buffer_size);
