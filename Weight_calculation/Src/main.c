@@ -87,7 +87,7 @@ int main(void)
 		if (GetAllFreshAnalogChannelsValues(ADC_CONVERTED_DATA_BUFFER_SIZE) == SUCCESS)
 		{
 			/*
-			 weight_handler.coefficientF1 = &F1;  fill the structure 
+			 weight_handler.coefficientF1 = &F1;  fill the structure
 			 if (pathSwitchPos == GPIO_PIN_SET)
 			 {
 			 weight_handler.coefficientF2 = &F2L;

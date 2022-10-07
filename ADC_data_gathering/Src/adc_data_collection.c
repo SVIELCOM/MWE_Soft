@@ -12,14 +12,16 @@ extern ADC_HandleTypeDef ADC2_Handle; /* ADC2 handle declaration */
 extern ADC_HandleTypeDef ADC3_Handle; /* ADC3 handle declaration */
 extern TIM_HandleTypeDef TimForADC_Handle; /*TIM Handle for triggering ADC extern declaration*/
 /* static Functions*/
-#if defined FIR_FILTER_ENABLED
+#if defined (FIR_FILTER_ENABLED)
 static void DataFiltering(float32_t *pSrc, float32_t *pDst, uint32_t buffer_size);
 #endif
 
+#if !defined (MASS_CALCULATION_INT)
 static float32_t AverageCalc(float32_t *AverageVolts, uint32_t buffer_size);
 static float32_t AverageCalc(float32_t *pSrc, uint32_t buffer_size);
 static void ADCdata_to_volts(uint32_t ADC_max_value, volatile uint16_t *pSrc, float32_t *pDst, uint32_t size_of_data_array);
 static float32_t GetAnalogChannelValue(volatile uint16_t *ACDxconvertedData, uint32_t ADC_Range, uint32_t buffer_size);
+#endif
 
 /* Variable containing ADC conversions data. Aligned 32-bytes,needed for cache maintenance purpose */
 ALIGN_32BYTES(volatile uint16_t aADC1ConvertedData[ADC_CONVERTED_DATA_BUFFER_SIZE]); /* data from ADC1 */
@@ -27,12 +29,14 @@ ALIGN_32BYTES(volatile uint16_t aADC2ConvertedData[ADC_CONVERTED_DATA_BUFFER_SIZ
 ALIGN_32BYTES(volatile uint16_t aADC3ConvertedData[ADC_CONVERTED_DATA_BUFFER_SIZE]); /* data from ADC3*/
 
 /* Static variables */
+
+#if !defined (MASS_CALCULATION_INT)
 /*коэффициенты фильтра*/
 float64_t FIRfilterCoefficients[FIR_FILTER_NUM_STAGES] = { 0.0072524808347225189208984375, 0.009322776459157466888427734375, 0.01530767977237701416015625, 0.02464949898421764373779296875,
 		0.0364511311054229736328125, 0.04956446588039398193359375, 0.062704540789127349853515625, 0.07457792758941650390625, 0.084012426435947418212890625, 0.0900747776031494140625,
 		0.09216459095478057861328125, 0.0900747776031494140625, 0.084012426435947418212890625, 0.07457792758941650390625, 0.062704540789127349853515625, 0.04956446588039398193359375,
 		0.0364511311054229736328125, 0.02464949898421764373779296875, 0.01530767977237701416015625, 0.009322776459157466888427734375, 0.0072524808347225189208984375 };
-
+#endif
 void StartADCdataCollection(void)
 {
 	/* ADC Handle intialization*/
@@ -86,13 +90,14 @@ uint8_t GetAllFreshAnalogChannelsValues(uint32_t buffer_size)
 		return UNSUCCESS;
 	else									//* возвращаем только когда все каналы закончили преобразование */
 	{
+#if !defined (MASS_CALCULATION_INT)		
 		AnalogCH1_collected_data = GetAnalogChannelValue(aADC1ConvertedData, ADC_RANGE, buffer_size);
 		AnalogCH2_collected_data = GetAnalogChannelValue(aADC2ConvertedData, ADC_RANGE, buffer_size);
 		AnalogCH3_collected_data = GetAnalogChannelValue(aADC3ConvertedData, ADC_RANGE, buffer_size);
+#endif
 		ADC_ConvCplt = 0x0; /* reset flag "ADCs conversions complete" */
 		return SUCCESS;
 	}
-	
 }
 
 /**
